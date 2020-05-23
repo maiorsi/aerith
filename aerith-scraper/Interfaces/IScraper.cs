@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
 using Aerith.Common.Models;
 
-namespace Aerith.Scraper.Intefaces
+namespace Aerith.Scraper.Interfaces
 {
     public interface IScraper
     {
-        void Scrape();
-        void Scrape(League league, Season season, Round round);
+        Task Scrape();
+        Task Scrape(League league, Season season, Round round);
     }
 }

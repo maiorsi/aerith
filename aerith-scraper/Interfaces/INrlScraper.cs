@@ -1,4 +1,4 @@
-namespace Aerith.Scraper.Intefaces
+namespace Aerith.Scraper.Interfaces
 {
     public interface INrlScraper : IScraper
     {
