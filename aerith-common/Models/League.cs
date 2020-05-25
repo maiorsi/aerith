@@ -12,6 +12,7 @@ namespace Aerith.Common.Models
             this.Tournaments = new List<Tournament>();
         }
         
+        [Required]
         [Column("codeId")]
         public int CodeId { get; set; }
 

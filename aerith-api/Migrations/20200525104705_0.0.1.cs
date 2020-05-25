@@ -333,6 +333,50 @@ namespace Aerith.Api.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "tips",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
+                    createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
+                    modifiedBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
+                    modifiedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
+                    isInactive = table.Column<bool>(nullable: false),
+                    userId = table.Column<int>(nullable: false),
+                    fixtureId = table.Column<int>(nullable: false),
+                    competitionId = table.Column<int>(nullable: false),
+                    selectedTeamId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tips", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tips_competitions_competitionId",
+                        column: x => x.competitionId,
+                        principalTable: "competitions",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tips_fixtures_fixtureId",
+                        column: x => x.fixtureId,
+                        principalTable: "fixtures",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_tips_teams_selectedTeamId",
+                        column: x => x.selectedTeamId,
+                        principalTable: "teams",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tips_users_userId",
+                        column: x => x.userId,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "codes",
                 columns: new[] { "id", "isInactive", "name" },
@@ -389,19 +433,49 @@ namespace Aerith.Api.Migrations
                 column: "codeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_rounds_tournamentId",
+                name: "IX_rounds_tournamentId_value",
                 table: "rounds",
-                column: "tournamentId");
+                columns: new[] { "tournamentId", "value" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_tournaments_leagueId",
-                table: "tournaments",
-                column: "leagueId");
+                name: "IX_teams_value_name",
+                table: "teams",
+                columns: new[] { "value", "name" },
+                unique: true,
+                filter: "[name] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tips_competitionId",
+                table: "tips",
+                column: "competitionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tips_fixtureId",
+                table: "tips",
+                column: "fixtureId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tips_selectedTeamId",
+                table: "tips",
+                column: "selectedTeamId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tips_userId_fixtureId_competitionId",
+                table: "tips",
+                columns: new[] { "userId", "fixtureId", "competitionId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_tournaments_seasonId",
                 table: "tournaments",
                 column: "seasonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tournaments_leagueId_seasonId",
+                table: "tournaments",
+                columns: new[] { "leagueId", "seasonId" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_users_groupId",
@@ -415,13 +489,19 @@ namespace Aerith.Api.Migrations
                 name: "byes");
 
             migrationBuilder.DropTable(
+                name: "groupUsers");
+
+            migrationBuilder.DropTable(
+                name: "tips");
+
+            migrationBuilder.DropTable(
                 name: "competitions");
 
             migrationBuilder.DropTable(
                 name: "fixtures");
 
             migrationBuilder.DropTable(
-                name: "groupUsers");
+                name: "users");
 
             migrationBuilder.DropTable(
                 name: "teams");
@@ -430,13 +510,10 @@ namespace Aerith.Api.Migrations
                 name: "rounds");
 
             migrationBuilder.DropTable(
-                name: "users");
+                name: "groups");
 
             migrationBuilder.DropTable(
                 name: "tournaments");
-
-            migrationBuilder.DropTable(
-                name: "groups");
 
             migrationBuilder.DropTable(
                 name: "leagues");

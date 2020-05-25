@@ -24,5 +24,8 @@ namespace Aerith.Common.Models
         // Navigation Properties
         [InverseProperty("User")]
         public virtual List<GroupUser> GroupUsers { get; set; }
+
+        [InverseProperty("User")]
+        public virtual List<Tip> Tips { get; set; }
     }
 }

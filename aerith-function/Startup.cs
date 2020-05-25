@@ -22,6 +22,7 @@ namespace Aerith.Function
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped<INrlScraper, NrlScraper>();
+            builder.Services.AddMemoryCache();
         }
     }
 }

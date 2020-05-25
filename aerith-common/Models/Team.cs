@@ -42,5 +42,8 @@ namespace Aerith.Common.Models
         public virtual List<Bye> Byes { get; set; }
 
         public virtual List<Fixture> Fixtures { get { return HomeFixtures.Union(AwayFixtures).ToList(); } }
+
+        [InverseProperty("Team")]
+        public virtual List<Tip> Tips { get; set; }
     }
 }

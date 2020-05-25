@@ -498,7 +498,8 @@ namespace Aerith.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TournamentId");
+                    b.HasIndex("TournamentId", "Value")
+                        .IsUnique();
 
                     b.ToTable("rounds");
                 });
@@ -618,7 +619,79 @@ namespace Aerith.Api.Migrations
 
                     b.HasAlternateKey("Value");
 
+                    b.HasIndex("Value", "Name")
+                        .IsUnique()
+                        .HasFilter("[name] IS NOT NULL");
+
                     b.ToTable("teams");
+                });
+
+            modelBuilder.Entity("Aerith.Common.Models.Tip", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("id")
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CompetitionId")
+                        .HasColumnName("competitionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedBy")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("createdBy")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128)
+                        .HasDefaultValue("AERITH");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("createdDate")
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("FixtureId")
+                        .HasColumnName("fixtureId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsInactive")
+                        .HasColumnName("isInactive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ModifiedBy")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnName("modifiedBy")
+                        .HasColumnType("nvarchar(128)")
+                        .HasMaxLength(128)
+                        .HasDefaultValue("AERITH");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnName("modifiedDate")
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("SelectedTeamId")
+                        .HasColumnName("selectedTeamId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnName("userId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompetitionId");
+
+                    b.HasIndex("FixtureId");
+
+                    b.HasIndex("SelectedTeamId");
+
+                    b.HasIndex("UserId", "FixtureId", "CompetitionId")
+                        .IsUnique();
+
+                    b.ToTable("tips");
                 });
 
             modelBuilder.Entity("Aerith.Common.Models.Tournament", b =>
@@ -669,9 +742,10 @@ namespace Aerith.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LeagueId");
-
                     b.HasIndex("SeasonId");
+
+                    b.HasIndex("LeagueId", "SeasonId")
+                        .IsUnique();
 
                     b.ToTable("tournaments");
                 });
@@ -814,6 +888,33 @@ namespace Aerith.Api.Migrations
                     b.HasOne("Aerith.Common.Models.Tournament", "Tournament")
                         .WithMany("Rounds")
                         .HasForeignKey("TournamentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Aerith.Common.Models.Tip", b =>
+                {
+                    b.HasOne("Aerith.Common.Models.Competition", "Competition")
+                        .WithMany("Tips")
+                        .HasForeignKey("CompetitionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Aerith.Common.Models.Fixture", "Fixture")
+                        .WithMany("Tips")
+                        .HasForeignKey("FixtureId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Aerith.Common.Models.Team", "Team")
+                        .WithMany("Tips")
+                        .HasForeignKey("SelectedTeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Aerith.Common.Models.User", "User")
+                        .WithMany("Tips")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

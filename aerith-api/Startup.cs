@@ -40,6 +40,8 @@ namespace aerith_backend
             });
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            services.AddMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

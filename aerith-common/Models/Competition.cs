@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -21,5 +22,8 @@ namespace Aerith.Common.Models
         [Required]
         [ForeignKey("TournamentId")]
         public virtual Tournament Tournament { get; set; }
+
+        [InverseProperty("Competition")]
+        public virtual List<Tip> Tips { get; set; }
     }
 }

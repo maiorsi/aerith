@@ -14,11 +14,9 @@ namespace Aerith.Common.Models
         
         // Properties
         [Column("name")]
-        [Index(IsUnique = true)]
         public string Name { get; set; }
 
         [Column("value")]
-        [Index(IsUnique = true)]
         public int Value { get; set; }
 
         [Column("tournamentId")]

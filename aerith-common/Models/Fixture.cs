@@ -57,5 +57,8 @@ namespace Aerith.Common.Models
         [Required]
         [ForeignKey("AwayTeamId")]
         public virtual Team AwayTeam { get; set; }
+
+        [InverseProperty("Fixture")]
+        public virtual List<Tip> Tips { get; set; }
     }
 }

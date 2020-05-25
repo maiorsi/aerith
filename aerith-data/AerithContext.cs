@@ -22,6 +22,7 @@ namespace Aerith.Data
         public DbSet<Competition> Competitions { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Tip> Tips { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -74,6 +75,8 @@ namespace Aerith.Data
                 entity.Property(_ => _.CreatedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
                 entity.Property(_ => _.ModifiedBy).HasDefaultValue("AERITH");
                 entity.Property(_ => _.ModifiedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
+
+                entity.HasIndex(_ => new { _.LeagueId, _.SeasonId}).IsUnique();
             });
 
             modelBuilder.Entity<Round>(entity =>
@@ -82,6 +85,8 @@ namespace Aerith.Data
                 entity.Property(_ => _.CreatedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
                 entity.Property(_ => _.ModifiedBy).HasDefaultValue("AERITH");
                 entity.Property(_ => _.ModifiedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
+
+                entity.HasIndex(_ => new { _.TournamentId, _.Value}).IsUnique();
             });
 
             modelBuilder.Entity<Team>(entity =>
@@ -90,6 +95,8 @@ namespace Aerith.Data
                 entity.Property(_ => _.CreatedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
                 entity.Property(_ => _.ModifiedBy).HasDefaultValue("AERITH");
                 entity.Property(_ => _.ModifiedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
+
+                entity.HasIndex(_ => new { _.Value, _.Name }).IsUnique();
             });
 
             modelBuilder.Entity<Fixture>(entity =>
@@ -152,6 +159,23 @@ namespace Aerith.Data
                 entity.Property(_ => _.CreatedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
                 entity.Property(_ => _.ModifiedBy).HasDefaultValue("AERITH");
                 entity.Property(_ => _.ModifiedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
+            });
+
+            modelBuilder.Entity<Tip>(entity =>
+            {
+                entity.Property(_ => _.CreatedBy).HasDefaultValue("AERITH");
+                entity.Property(_ => _.CreatedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
+                entity.Property(_ => _.ModifiedBy).HasDefaultValue("AERITH");
+                entity.Property(_ => _.ModifiedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
+
+                entity.HasIndex(_ => new { _.UserId, _.FixtureId, _.CompetitionId }).IsUnique();
+
+                entity.HasOne(_ => _.Fixture)
+                    .WithMany(_ => _.Tips)
+                    .HasForeignKey(_ => _.FixtureId)
+                    .HasPrincipalKey(_ => _.Id)
+                    .IsRequired(true)
+                    .OnDelete(DeleteBehavior.NoAction);
             });
         }
     }
