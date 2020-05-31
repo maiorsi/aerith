@@ -18,8 +18,7 @@ namespace Aerith.Common.Models
 
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column("createdDate")]
-        [DefaultValue("DATETIME()")]
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         [MaxLength(128)]
         [Column("modifiedBy")]
@@ -28,8 +27,7 @@ namespace Aerith.Common.Models
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [Column("modifiedDate")]
-        [DefaultValue("DATETIME()")]
-        public DateTime ModifiedDate { get; set; }
+        public DateTime ModifiedDate { get; set; } = DateTime.Now;
 
         [Column("isInactive")]
         [DefaultValue(false)]

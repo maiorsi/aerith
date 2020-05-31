@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -20,7 +21,7 @@ namespace Aerith.Scraper.Services
 {
     public class NrlScraper : INrlScraper
     {
-        private const int START_SEASON = 2010; // ACTUAL START 1908;
+        private const int START_SEASON = 2020; // ACTUAL START 1908;
         private const int DEFAULT_LEAGUE = 111;
         private const int RUGBY_LEAGUE_CODE = 1;
         private const int START_ROUND = 1;
@@ -71,7 +72,7 @@ namespace Aerith.Scraper.Services
                 MaxDegreeOfParallelism = 2
             };
 
-            Parallel.For(START_SEASON, DateTime.Now.Year, parallelOptions, i =>
+            Parallel.For(START_SEASON, DateTime.Now.Year + 1, parallelOptions, i =>
             {
                 var scrapeResult = FetchNrlData(DEFAULT_LEAGUE.ToString(), i.ToString(), round.ToString());
 
@@ -160,10 +161,13 @@ namespace Aerith.Scraper.Services
 
                 if (t == null)
                 {
+                    var svg = FetchSvg(team.Name);
+
                     await _teamRepository.Add(new Team
                     {
                         Name = team.Name,
-                        Value = team.Value
+                        Value = team.Value,
+                        BadgeSVG = svg
                     });
 
                     _logger.LogInformation("Added team with name: {}", team.Name);
@@ -252,6 +256,18 @@ namespace Aerith.Scraper.Services
             };
 
             return JsonConvert.DeserializeObject<NrlScrapeResult>(json, jss);
+        }
+
+        private byte[] FetchSvg(string team)
+        {
+            var url = $"https://www.nrl.com/client/dist/logos/{team.ToLower()}-badge.svg";
+
+            using(var web = new WebClient())
+            {
+                byte[] svg = web.DownloadData(new Uri(url));
+
+                return svg;
+            }
         }
 
         private async Task SyncDatabase(Dictionary<string, NrlScrapeResult> scrapeResults)

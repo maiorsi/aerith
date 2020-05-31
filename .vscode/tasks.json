@@ -15,6 +15,20 @@
             "problemMatcher": "$msCompile"
         },
         {
+            "label": "clean-func",
+            "command": "dotnet",
+            "args": [
+                "clean",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "type": "process",
+            "problemMatcher": "$msCompile",
+            "options": {
+                "cwd": "${workspaceFolder}/aerith-function"
+            }
+        },
+        {
             "label": "clean",
             "command": "dotnet",
             "args": [
@@ -23,6 +37,25 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "type": "process",
+            "problemMatcher": "$msCompile",
+            "options": {
+                "cwd": "${workspaceFolder}/aerith-api"
+            }
+        },
+        {
+            "label": "build-func",
+            "command": "dotnet",
+            "args": [
+                "build",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "type": "process",
+            "dependsOn": "clean-func",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "problemMatcher": "$msCompile",
             "options": {
                 "cwd": "${workspaceFolder}/aerith-function"
@@ -44,6 +77,22 @@
             },
             "problemMatcher": "$msCompile",
             "options": {
+                "cwd": "${workspaceFolder}/aerith-api"
+            }
+        },
+        {
+            "label": "clean release func",
+            "command": "dotnet",
+            "args": [
+                "clean",
+                "--configuration",
+                "Release",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "type": "process",
+            "problemMatcher": "$msCompile",
+            "options": {
                 "cwd": "${workspaceFolder}/aerith-function"
             }
         },
@@ -58,6 +107,23 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "type": "process",
+            "problemMatcher": "$msCompile",
+            "options": {
+                "cwd": "${workspaceFolder}/aerith-api"
+            }
+        },
+        {
+            "label": "publish func",
+            "command": "dotnet",
+            "args": [
+                "publish",
+                "--configuration",
+                "Release",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "type": "process",
+            "dependsOn": "clean release func",
             "problemMatcher": "$msCompile",
             "options": {
                 "cwd": "${workspaceFolder}/aerith-function"
@@ -77,12 +143,12 @@
             "dependsOn": "clean release",
             "problemMatcher": "$msCompile",
             "options": {
-                "cwd": "${workspaceFolder}/aerith-function"
+                "cwd": "${workspaceFolder}/aerith-api"
             }
         },
         {
             "type": "func",
-            "dependsOn": "build",
+            "dependsOn": "build-func",
             "options": {
                 "cwd": "${workspaceFolder}/aerith-function/bin/Debug/netcoreapp3.1"
             },

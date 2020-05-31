@@ -123,9 +123,9 @@ namespace Aerith.Api.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedDate = new DateTime(2020, 5, 29, 21, 49, 4, 731, DateTimeKind.Local).AddTicks(6722),
                             IsInactive = false,
-                            ModifiedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ModifiedDate = new DateTime(2020, 5, 29, 21, 49, 4, 735, DateTimeKind.Local).AddTicks(4021),
                             Name = "Rugby League"
                         });
                 });
@@ -566,10 +566,9 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("BadgeSVG")
+                    b.Property<byte[]>("BadgeSVG")
                         .HasColumnName("badgeSVG")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("CreatedBy")
                         .ValueGeneratedOnAdd()
@@ -603,11 +602,6 @@ namespace Aerith.Api.Migrations
 
                     b.Property<string>("Name")
                         .HasColumnName("name")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
-
-                    b.Property<string>("SilhoetteSVG")
-                        .HasColumnName("silhoetteSVG")
                         .HasColumnType("nvarchar(128)")
                         .HasMaxLength(128);
 

@@ -23,13 +23,8 @@ namespace Aerith.Common.Models
         [Column("name")]
         public string Name { get; set; }
 
-        [MaxLength(128)]
         [Column("badgeSVG")]
-        public string BadgeSVG { get; set; }
-
-        [MaxLength(128)]
-        [Column("silhoetteSVG")]
-        public string SilhoetteSVG { get; set; }
+        public byte[] BadgeSVG { get; set; }
 
         // Navigation Properties
         [InverseProperty("HomeTeam")]

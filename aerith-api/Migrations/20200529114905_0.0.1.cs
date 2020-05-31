@@ -76,8 +76,7 @@ namespace Aerith.Api.Migrations
                     isInactive = table.Column<bool>(nullable: false),
                     value = table.Column<int>(nullable: false),
                     name = table.Column<string>(maxLength: 128, nullable: true),
-                    badgeSVG = table.Column<string>(maxLength: 128, nullable: true),
-                    silhoetteSVG = table.Column<string>(maxLength: 128, nullable: true)
+                    badgeSVG = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -379,8 +378,8 @@ namespace Aerith.Api.Migrations
 
             migrationBuilder.InsertData(
                 table: "codes",
-                columns: new[] { "id", "isInactive", "name" },
-                values: new object[] { 1, false, "Rugby League" });
+                columns: new[] { "id", "createdDate", "isInactive", "name" },
+                values: new object[] { 1, new DateTime(2020, 5, 29, 21, 49, 4, 731, DateTimeKind.Local).AddTicks(6722), false, "Rugby League" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_byes_teamId",

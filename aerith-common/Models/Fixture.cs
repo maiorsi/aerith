@@ -10,6 +10,7 @@ namespace Aerith.Common.Models
     {
         // Properties
         [Column("roundId")]
+        [Index]
         public int RoundId { get; set; }
 
         [MaxLength(64)]
@@ -25,9 +26,11 @@ namespace Aerith.Common.Models
         public string URL { get; set; }
 
         [Column("homeTeamId")]
+        [Index]
         public int HomeTeamId { get; set; }
 
         [Column("awayTeamId")]
+        [Index]
         public int AwayTeamId { get; set; }
 
         [Column("teamId")]
