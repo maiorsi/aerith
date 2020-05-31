@@ -1,6 +1,6 @@
 using System;
 
-namespace aerith_backend
+namespace Aerith.Api
 {
     public class WeatherForecast
     {

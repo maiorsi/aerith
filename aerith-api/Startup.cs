@@ -1,8 +1,13 @@
+using Aerith.Api.Helpers;
+using Aerith.Common.Models;
 using Aerith.Data;
 using Aerith.Data.Interfaces;
 using Aerith.Data.Services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -11,7 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
-namespace aerith_backend
+namespace Aerith.Api
 {
     public class Startup
     {
@@ -34,6 +39,9 @@ namespace aerith_backend
             // DB Repositories
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+            // Email Sender
+            services.AddSingleton<IEmailSender, EmailSender>();
+
             // Memory Cache
             services.AddMemoryCache();
 
@@ -51,10 +59,23 @@ namespace aerith_backend
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Aerith API", Version = "v1" });
             });
 
+            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddEntityFrameworkStores<AerithContext>();
+
+            services.AddIdentityServer()
+                .AddApiAuthorization<ApplicationUser, AerithContext>();
+
+            services.AddAuthentication()
+                .AddIdentityServerJwt();
+
             services.AddControllersWithViews().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
+
+            services.AddRazorPages();
+
+            services.AddScoped<SignInManager<ApplicationUser>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,10 +110,14 @@ namespace aerith_backend
             app.UseRouting();
 
             app.UseAuthentication();
+            app.UseIdentityServer();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
         }
     }

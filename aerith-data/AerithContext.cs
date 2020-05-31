@@ -1,13 +1,18 @@
 using Aerith.Common.Models;
+using IdentityServer4.EntityFramework.Options;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Aerith.Data
 {
-    public class AerithContext : DbContext
+    public class AerithContext : ApiAuthorizationDbContext<ApplicationUser>
     {
         private const string SQL_DEFAULT_DATE = "GETDATE()";
 
-        public AerithContext(DbContextOptions<AerithContext> options) : base(options)
+        public AerithContext(DbContextOptions<AerithContext> options, IOptions<OperationalStoreOptions> operationalStoreOptions)
+        : base(options, operationalStoreOptions)
         {
         }
 
@@ -21,11 +26,15 @@ namespace Aerith.Data
         public DbSet<Bye> Byes { get; set; }
         public DbSet<Competition> Competitions { get; set; }
         public DbSet<Group> Groups { get; set; }
-        public DbSet<User> Users { get; set; }
         public DbSet<Tip> Tips { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            // Identity
+            modelBuilder.Entity<ApplicationUser>().ToTable("applicationUsers");
+
             // Custom Keys
             modelBuilder.Entity<League>(entity =>
             {
