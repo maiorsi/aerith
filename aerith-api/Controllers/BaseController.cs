@@ -1,0 +1,139 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Aerith.Data.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+namespace Aerith.Api.Controllers
+{
+    [ApiController]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    public class BaseController<T> : ControllerBase where T: class
+    {
+        private readonly ILogger<BaseController<T>> _logger;
+        private readonly IRepository<T> _repository;
+
+        public BaseController(ILogger<BaseController<T>> logger, IRepository<T> repository)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        }
+
+        /// <summary>
+        /// Get All Users
+        /// </summary>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<T>>> Get_1_0(ApiVersion version)
+        {
+            _logger.LogTrace("GET api/v{}.{}/[controller]", version.MajorVersion, version.MinorVersion);
+
+            return Ok(await _repository.GetAll());
+        }
+
+        /// <summary>
+        /// Get an entity by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        [HttpGet(":id")]
+        [MapToApiVersion("1.0")]
+        public async Task<ActionResult<T>> GetOne_1_0([FromRoute] int id, ApiVersion version)
+        {
+            _logger.LogTrace("GET api/v{}.{}/[controller]/{}", version.MajorVersion, version.MinorVersion, id);
+            
+            return await _repository.Get(id);
+        }
+
+        /// <summary>
+        /// Create a new entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        [HttpPost()]
+        [MapToApiVersion("1.0")]
+        public async Task<ActionResult<T>> Create_1_0([FromBody] T entity, ApiVersion version)
+        {
+            _logger.LogTrace("POST api/v{}.{}/[controller]", version.MajorVersion, version.MinorVersion);
+            
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(await _repository.Add(entity));
+        }
+
+        /// <summary>
+        /// Overwrite an entity
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        [HttpPut(":id")]
+        [MapToApiVersion("1.0")]
+        public async Task<ActionResult<T>> Overwrite_1_0([FromRoute] int id, [FromBody] T entity, ApiVersion version)
+        {
+            _logger.LogTrace("PUT api/v{}.{}/[controller]/{}", version.MajorVersion, version.MinorVersion, id);
+            
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(await _repository.Update(entity));
+        }
+
+        /// <summary>
+        /// Update an entity
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="jsonPatch"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        [HttpPatch(":id")]
+        [MapToApiVersion("1.0")]
+        public async Task<ActionResult<T>> Update_1_0([FromRoute] int id, [FromBody] JsonPatchDocument<T> jsonPatch, ApiVersion version)
+        {
+            _logger.LogTrace("PATCH api/v{}.{}/[controller]/{}", version.MajorVersion, version.MinorVersion, id);
+            
+            var u = await _repository.Get(id);
+
+            if(u == null)
+            {
+                return NotFound();
+            }
+
+            jsonPatch.ApplyTo(u);
+
+            return Ok(await _repository.Update(u));
+        }
+
+        [HttpDelete(":id")]
+        [MapToApiVersion("1.0")]
+        public async Task<ActionResult> Delete_1_0([FromRoute] int id, ApiVersion version)
+        {
+            _logger.LogTrace("DELETE api/v{}.{}/[controller]/{}", version.MajorVersion, version.MinorVersion, id);
+            
+            var u = await _repository.Get(id);
+
+            if(u == null)
+            {
+                return NotFound();
+            }
+
+            await _repository.Remove(id);
+
+            return Ok();
+        }
+    }
+}

@@ -76,6 +76,17 @@ namespace Aerith.Api
             services.AddRazorPages();
 
             services.AddScoped<SignInManager<ApplicationUser>>();
+
+            services.AddRouting(options => options.LowercaseUrls = true);
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "cors",
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:8080");
+                    });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -108,7 +119,7 @@ namespace Aerith.Api
             });
 
             app.UseRouting();
-
+            app.UseCors("cors");
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();

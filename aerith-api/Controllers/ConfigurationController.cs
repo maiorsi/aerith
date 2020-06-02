@@ -4,11 +4,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Aerith.Api.Controllers
 {
-    public class OidcConfigurationController : Controller
+    public class ConfigurationController : Controller
     {
-        private readonly ILogger<OidcConfigurationController> _logger;
+        private readonly ILogger<ConfigurationController> _logger;
 
-        public OidcConfigurationController(IClientRequestParametersProvider clientRequestParametersProvider, ILogger<OidcConfigurationController> logger)
+        public ConfigurationController(IClientRequestParametersProvider clientRequestParametersProvider, ILogger<ConfigurationController> logger)
         {
             ClientRequestParametersProvider = clientRequestParametersProvider;
             _logger = logger;
