@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Aerith.Api.Controllers
+namespace aerith_api.Controllers
 {
     [Authorize]
     [ApiController]

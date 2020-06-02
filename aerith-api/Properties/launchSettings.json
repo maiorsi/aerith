@@ -4,8 +4,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:41118",
-      "sslPort": 44391
+      "applicationUrl": "http://localhost:8683",
+      "sslPort": 44367
     }
   },
   "profiles": {
@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "aerith_backend": {
+    "aerith_api": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "weatherforecast",

@@ -1,18 +1,19 @@
-using Aerith.Api.Helpers;
-using Aerith.Common.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Aerith.Data;
 using Aerith.Data.Interfaces;
 using Aerith.Data.Services;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
@@ -30,6 +31,11 @@ namespace Aerith.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
+
             // DB Context
             services.AddDbContext<AerithContext>(options =>
             {
@@ -38,9 +44,6 @@ namespace Aerith.Api
 
             // DB Repositories
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-
-            // Email Sender
-            services.AddSingleton<IEmailSender, EmailSender>();
 
             // Memory Cache
             services.AddMemoryCache();
@@ -59,26 +62,10 @@ namespace Aerith.Api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Aerith API", Version = "v1" });
             });
 
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<AerithContext>();
-
-            services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, AerithContext>();
-
-            services.AddAuthentication()
-                .AddIdentityServerJwt();
-
-            services.AddControllersWithViews().AddNewtonsoftJson(options =>
-            {
-                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-            });
-
-            services.AddRazorPages();
-
-            services.AddScoped<SignInManager<ApplicationUser>>();
-
+            // Lower case URLs
             services.AddRouting(options => options.LowercaseUrls = true);
 
+            // CORS
             services.AddCors(options =>
             {
                 options.AddPolicy(name: "cors",
@@ -95,17 +82,9 @@ namespace Aerith.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
@@ -119,16 +98,14 @@ namespace Aerith.Api
             });
 
             app.UseRouting();
+
             app.UseCors("cors");
-            app.UseAuthentication();
-            app.UseIdentityServer();
+
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
-                endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }
