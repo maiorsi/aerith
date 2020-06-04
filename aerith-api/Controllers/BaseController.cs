@@ -35,7 +35,7 @@ namespace Aerith.Api.Controllers
         {
             _logger.LogTrace("GET api/v{}.{}/[controller]", version.MajorVersion, version.MinorVersion);
 
-            return Ok(await _repository.GetAll());
+            return Ok(await _repository.GetAllAsync());
         }
 
         /// <summary>
@@ -50,7 +50,7 @@ namespace Aerith.Api.Controllers
         {
             _logger.LogTrace("GET api/v{}.{}/[controller]/{}", version.MajorVersion, version.MinorVersion, id);
             
-            return await _repository.Get(id);
+            return await _repository.GetAsync(id);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Aerith.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            return Ok(await _repository.Add(entity));
+            return Ok(await _repository.AddAsync(entity));
         }
 
         /// <summary>
@@ -90,7 +90,7 @@ namespace Aerith.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            return Ok(await _repository.Update(entity));
+            return Ok(await _repository.UpdateAsync(entity));
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace Aerith.Api.Controllers
         {
             _logger.LogTrace("PATCH api/v{}.{}/[controller]/{}", version.MajorVersion, version.MinorVersion, id);
             
-            var u = await _repository.Get(id);
+            var u = await _repository.GetAsync(id);
 
             if(u == null)
             {
@@ -115,7 +115,7 @@ namespace Aerith.Api.Controllers
 
             jsonPatch.ApplyTo(u);
 
-            return Ok(await _repository.Update(u));
+            return Ok(await _repository.UpdateAsync(u));
         }
 
         [HttpDelete(":id")]
@@ -124,14 +124,14 @@ namespace Aerith.Api.Controllers
         {
             _logger.LogTrace("DELETE api/v{}.{}/[controller]/{}", version.MajorVersion, version.MinorVersion, id);
             
-            var u = await _repository.Get(id);
+            var u = await _repository.GetAsync(id);
 
             if(u == null)
             {
                 return NotFound();
             }
 
-            await _repository.Remove(id);
+            await _repository.RemoveAsync(id);
 
             return Ok();
         }

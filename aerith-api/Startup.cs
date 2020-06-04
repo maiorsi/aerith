@@ -1,19 +1,23 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
+using Aerith.Api.Interfaces;
+using Aerith.Api.Services;
+using Aerith.Api.Settings;
+using Aerith.Common.Models.Identity;
 using Aerith.Data;
 using Aerith.Data.Interfaces;
 using Aerith.Data.Services;
+using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
@@ -42,8 +46,13 @@ namespace Aerith.Api
                 options.UseSqlServer(Configuration.GetConnectionString("AerithDB"), b => b.MigrationsAssembly("aerith-api"));
             });
 
+            // Settings
+            services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
+
             // DB Repositories
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            
+            services.AddSingleton<IJwtService, JwtService>();
 
             // Memory Cache
             services.AddMemoryCache();
@@ -71,9 +80,51 @@ namespace Aerith.Api
                 options.AddPolicy(name: "cors",
                     builder =>
                     {
+                        //* Move this into Settings
                         builder.WithOrigins("http://localhost:8080");
                     });
             });
+
+            // Identity
+            services.AddIdentityCore<ApplicationUser>(o =>
+            {
+                //* Move these into Settings
+                o.Password.RequireDigit = false;
+                o.Password.RequireLowercase = false;
+                o.Password.RequireUppercase = false;
+                o.Password.RequireNonAlphanumeric = false;
+                o.Password.RequiredLength = 6;
+            })
+            .AddEntityFrameworkStores<AerithContext>()
+            .AddDefaultTokenProviders();
+
+            //! Move this into Settings
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("mysupers3cr3tsharedkey!"));
+
+            // Authentication
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        //* Move these into Settings
+                        ClockSkew = TimeSpan.FromMinutes(5),
+                        IssuerSigningKey = signingKey,
+                        RequireSignedTokens = true,
+                        RequireExpirationTime = true,
+                        ValidateLifetime = true,
+                        ValidateAudience = true,
+                        ValidAudience = "api://default",
+                        ValidateIssuer = true,
+                        ValidIssuer = "https://aerith-api"
+                    };
+                    
+                    options.Authority = "https://aerith-api";
+                    options.Audience = "api://default";
+                });
+            
+            // Automapper
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -100,6 +151,8 @@ namespace Aerith.Api
             app.UseRouting();
 
             app.UseCors("cors");
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

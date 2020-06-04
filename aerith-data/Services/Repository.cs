@@ -19,7 +19,7 @@ namespace Aerith.Data.Services
             _dbSet = context.Set<TEntity>();
         }
 
-        public async Task<TEntity> Add(TEntity item)
+        public async Task<TEntity> AddAsync(TEntity item)
         {
             await _dbSet.AddAsync(item);
             await _context.SaveChangesAsync();
@@ -27,12 +27,12 @@ namespace Aerith.Data.Services
             return item;
         }
 
-        public async Task<TEntity> Get(int id)
+        public async Task<TEntity> GetAsync(int id)
         {
             return await _dbSet.FirstOrDefaultAsync(_ => _.Id == id);
         }
 
-        public async Task<IEnumerable<TEntity>> GetAll()
+        public async Task<IEnumerable<TEntity>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
         }
@@ -47,7 +47,7 @@ namespace Aerith.Data.Services
             return _dbSet.AsQueryable();
         }
 
-        public async Task<bool> Remove(int id)
+        public async Task<bool> RemoveAsync(int id)
         {
             _dbSet.Remove(await _dbSet.FindAsync(id));
             
@@ -56,7 +56,7 @@ namespace Aerith.Data.Services
             return true;
         }
 
-        public async Task<TEntity> Update(TEntity item)
+        public async Task<TEntity> UpdateAsync(TEntity item)
         {
             _dbSet.Update(item);
 

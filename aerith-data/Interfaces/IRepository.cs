@@ -8,10 +8,10 @@ namespace Aerith.Data.Interfaces
     {
         AerithContext GetContext();
         IQueryable<TEntity> GetQueryable();
-        Task<IEnumerable<TEntity>> GetAll();
-        Task<TEntity> Get(int id);
-        Task<TEntity> Add(TEntity item);
-        Task<TEntity> Update(TEntity item);
-        Task<bool> Remove(int id);
+        Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<TEntity> GetAsync(int id);
+        Task<TEntity> AddAsync(TEntity item);
+        Task<TEntity> UpdateAsync(TEntity item);
+        Task<bool> RemoveAsync(int id);
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Aerith.Common.Models.Identity;
 
 namespace Aerith.Common.Models
 {
@@ -14,6 +15,9 @@ namespace Aerith.Common.Models
         [Column("loginId")]
         public string LoginId { get; set; }
 
+        [Column("identityId")]
+        public string IdentityId { get; set; }
+
         [MaxLength(256)]
         [Column("name")]
         public string Name { get; set; }
@@ -22,6 +26,9 @@ namespace Aerith.Common.Models
         public int? GroupId { get; set; }
 
         // Navigation Properties
+        [ForeignKey("IdentityId")]
+        public virtual ApplicationUser ApplicationUser { get; set; }
+
         [InverseProperty("User")]
         public virtual List<GroupUser> GroupUsers { get; set; }
 

@@ -1,18 +1,16 @@
 using Aerith.Common.Models;
-using IdentityServer4.EntityFramework.Options;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
-using Microsoft.AspNetCore.Identity;
+using Aerith.Common.Models.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace Aerith.Data
 {
-    public class AerithContext : ApiAuthorizationDbContext<ApplicationUser>
+    public class AerithContext : IdentityDbContext<ApplicationUser>
     {
         private const string SQL_DEFAULT_DATE = "GETDATE()";
 
-        public AerithContext(DbContextOptions<AerithContext> options, IOptions<OperationalStoreOptions> operationalStoreOptions)
-        : base(options, operationalStoreOptions)
+        public AerithContext(DbContextOptions<AerithContext> options)
+        : base(options)
         {
         }
 

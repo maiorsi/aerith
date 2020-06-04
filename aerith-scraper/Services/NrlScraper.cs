@@ -99,7 +99,7 @@ namespace Aerith.Scraper.Services
 
                 if (lg == null)
                 {
-                    await _leagueRepository.Add(new League
+                    await _leagueRepository.AddAsync(new League
                     {
                         Name = league.Name,
                         Value = league.Value,
@@ -116,7 +116,7 @@ namespace Aerith.Scraper.Services
                     {
                         lg.Name = league.Name;
 
-                        await _leagueRepository.Update(lg);
+                        await _leagueRepository.UpdateAsync(lg);
                     }
                 }
             }
@@ -131,7 +131,7 @@ namespace Aerith.Scraper.Services
 
                 if (s == null)
                 {
-                    await _seasonRepository.Add(new Season {
+                    await _seasonRepository.AddAsync(new Season {
                         Name = season.Name,
                         Value = season.Value
                     });
@@ -146,7 +146,7 @@ namespace Aerith.Scraper.Services
                     {
                         s.Name = season.Name;
 
-                        await _seasonRepository.Update(s);
+                        await _seasonRepository.UpdateAsync(s);
                     }
                 }
             }
@@ -163,7 +163,7 @@ namespace Aerith.Scraper.Services
                 {
                     var svg = FetchSvg(team.Name);
 
-                    await _teamRepository.Add(new Team
+                    await _teamRepository.AddAsync(new Team
                     {
                         Name = team.Name,
                         Value = team.Value,
@@ -180,7 +180,7 @@ namespace Aerith.Scraper.Services
                     {
                         t.Name = team.Name;
 
-                        await _teamRepository.Update(t);
+                        await _teamRepository.UpdateAsync(t);
                     }
                 }
             }
@@ -213,7 +213,7 @@ namespace Aerith.Scraper.Services
 
                 if (t == null)
                 {
-                    await _tournamentRepository.Add(new Tournament
+                    await _tournamentRepository.AddAsync(new Tournament
                     {
                         LeagueId = l.Id,
                         SeasonId = s.Id
@@ -327,7 +327,7 @@ namespace Aerith.Scraper.Services
 
                         if (r == null)
                         {
-                            r = await _roundRepository.Add(new Round
+                            r = await _roundRepository.AddAsync(new Round
                             {
                                 TournamentId = t.Id,
                                 Value = round,
@@ -372,7 +372,7 @@ namespace Aerith.Scraper.Services
 
                             if (f == null)
                             {
-                               await _fixtureRepository.Add(new Fixture
+                               await _fixtureRepository.AddAsync(new Fixture
                                 {
                                     AwayTeamId = awayTeam.Id,
                                     AwayTeamScore = fixture.AwayTeam.Score,
