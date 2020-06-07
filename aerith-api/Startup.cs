@@ -81,7 +81,9 @@ namespace Aerith.Api
                     builder =>
                     {
                         //* Move this into Settings
-                        builder.WithOrigins("http://localhost:8080");
+                        builder.WithOrigins("http://localhost:8080")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod();
                     });
             });
 

@@ -1,57 +1,71 @@
 <template>
-  <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+  <v-app id="inspire">
+    <v-navigation-drawer v-model="drawer" app clipped>
+      <v-list dense>
+        <v-list-item link to="/">
+          <v-list-item-action>
+            <v-icon>mdi-view-dashboard</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Home</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link to="/about">
+          <v-list-item-action>
+            <v-icon>mdi-view-dashboard</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>About</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link>
+          <v-list-item-action>
+            <v-icon>mdi-cog</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Settings</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+    <v-app-bar app clipped-left v-show="isAuthenticated">
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title>Aerith</v-toolbar-title>
     </v-app-bar>
 
     <v-content>
-      <HelloWorld />
+      <v-container class="fill-height" fluid>
+        <router-view />
+      </v-container>
     </v-content>
+
+    <v-footer app>
+      <span>&copy; 2020</span>
+    </v-footer>
   </v-app>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
-import HelloWorld from "./components/HelloWorld.vue";
+import { Component, Vue } from "vue-property-decorator";
+import { EventBus } from "./event-bus";
+import { namespace } from "vuex-class";
+import { mapGetters } from "vuex";
+
+const auth = namespace("auth");
 
 export default Vue.extend({
-  name: "App",
-
-  components: {
-    HelloWorld
+  computed: {
+    ...mapGetters("auth", ["isAuthenticated"])
   },
-
+  created() {
+    this.$vuetify.theme.dark = true;
+  },
   data: () => ({
-    //
-  })
+    drawer: false
+  }),
+  props: {
+    source: String
+  }
 });
 </script>
