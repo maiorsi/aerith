@@ -100,8 +100,7 @@ namespace Aerith.Api
             .AddEntityFrameworkStores<AerithContext>()
             .AddDefaultTokenProviders();
 
-            //! Move this into Settings
-            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("mysupers3cr3tsharedkey!"));
+            var issuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:HmacSecretKey"]));
 
             // Authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -111,7 +110,7 @@ namespace Aerith.Api
                     {
                         //* Move these into Settings
                         ClockSkew = TimeSpan.FromMinutes(5),
-                        IssuerSigningKey = signingKey,
+                        IssuerSigningKey = issuerSigningKey,
                         RequireSignedTokens = true,
                         RequireExpirationTime = true,
                         ValidateLifetime = true,

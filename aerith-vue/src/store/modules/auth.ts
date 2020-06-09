@@ -41,6 +41,13 @@ const actions: ActionTree<AuthState, any> = {
           reject(exception);
         });
     });
+  },
+  logout({ dispatch, commit }: { dispatch: any; commit: any }) {
+      return new Promise((resolve) => {
+        commit("authLogout");
+        localStorage.removeItem("auth-token");
+        resolve();
+      });
   }
 };
 

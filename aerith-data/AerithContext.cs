@@ -1,3 +1,4 @@
+using System;
 using Aerith.Common.Models;
 using Aerith.Common.Models.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -5,7 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Aerith.Data
 {
-    public class AerithContext : IdentityDbContext<ApplicationUser>
+    public class AerithContext : IdentityDbContext<ApplicationUser,
+        ApplicationRole, Guid, ApplicationUserClaim, ApplicationUserRole,
+        ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
     {
         private const string SQL_DEFAULT_DATE = "GETDATE()";
 
@@ -31,7 +34,179 @@ namespace Aerith.Data
             base.OnModelCreating(modelBuilder);
 
             // Identity
-            modelBuilder.Entity<ApplicationUser>().ToTable("applicationUsers");
+            modelBuilder.Entity<ApplicationUser>(e =>
+            {
+                e.ToTable("applicationUsers");
+
+                // Primary key
+                e.HasKey(u => u.Id);
+                e.Property(u => u.Id).HasColumnName("id");
+
+                // Indexes for "normalized" username and email, to allow efficient lookups
+                e.HasIndex(u => u.NormalizedUserName).HasName("UserNameIndex").IsUnique();
+                e.HasIndex(u => u.NormalizedEmail).HasName("EmailIndex");
+
+                // A concurrency token for use with the optimistic concurrency checking
+                e.Property(u => u.ConcurrencyStamp)
+                    .HasColumnName("concurrencyStamp")
+                    .IsConcurrencyToken();
+
+                // Limit the size of columns to use efficient database types
+                e.Property(u => u.UserName)
+                    .HasColumnName("username")
+                    .HasMaxLength(256);
+
+                e.Property(u => u.NormalizedUserName)
+                    .HasColumnName("normalisedUsername")
+                    .HasMaxLength(256);
+
+                e.Property(u => u.Email)
+                    .HasColumnName("email")
+                    .HasMaxLength(256);
+
+                e.Property(u => u.NormalizedEmail)
+                    .HasColumnName("normalisedEmail")
+                    .HasMaxLength(256);
+
+                e.Property(u => u.EmailConfirmed).HasColumnName("emailConfirmed");
+                e.Property(u => u.PasswordHash).HasColumnName("passwordHash");
+                e.Property(u => u.SecurityStamp).HasColumnName("securityStamp");
+                e.Property(u => u.PhoneNumber).HasColumnName("phoneNumber");
+                e.Property(u => u.PhoneNumberConfirmed).HasColumnName("phoneNumberConfirmed");
+                e.Property(u => u.TwoFactorEnabled).HasColumnName("twoFactorEnabled");
+                e.Property(u => u.LockoutEnd).HasColumnName("lockoutEnd");
+                e.Property(u => u.LockoutEnabled).HasColumnName("lockoutEnabled");
+                e.Property(u => u.AccessFailedCount).HasColumnName("accessFailedCount");
+
+                // The relationships between User and other entity types
+                // Note that these relationships are configured with no navigation properties
+
+                // Each User can have many UserClaims
+                e.HasMany<ApplicationUserClaim>().WithOne().HasForeignKey(uc => uc.UserId).IsRequired();
+
+                // Each User can have many UserLogins
+                e.HasMany<ApplicationUserLogin>().WithOne().HasForeignKey(ul => ul.UserId).IsRequired();
+
+                // Each User can have many UserTokens
+                e.HasMany<ApplicationUserToken>().WithOne().HasForeignKey(ut => ut.UserId).IsRequired();
+
+                // Each User can have many entries in the UserRole join table
+                e.HasMany<ApplicationUserRole>().WithOne().HasForeignKey(ur => ur.UserId).IsRequired();
+
+            });
+
+            modelBuilder.Entity<ApplicationRole>(entity =>
+            {
+                entity.ToTable("applicationRoles");
+
+                // Primary key
+                entity.HasKey(r => r.Id);
+                entity.Property(r => r.Id).HasColumnName("id");
+
+                // Index for "normalized" role name to allow efficient lookups
+                entity.HasIndex(r => r.NormalizedName).HasName("RoleNameIndex").IsUnique();
+
+                // A concurrency token for use with the optimistic concurrency checking
+                entity.Property(r => r.ConcurrencyStamp)
+                    .HasColumnName("concurrencyStamp")
+                    .IsConcurrencyToken();
+
+                // Limit the size of columns to use efficient database types
+                entity.Property(u => u.Name)
+                    .HasColumnName("name")
+                    .HasMaxLength(256);
+
+                entity.Property(u => u.NormalizedName)
+                    .HasColumnName("normalisedName")
+                    .HasMaxLength(256);
+
+                // The relationships between Role and other entity types
+                // Note that these relationships are configured with no navigation properties
+
+                // Each Role can have many entries in the UserRole join table
+                entity.HasMany<ApplicationUserRole>().WithOne().HasForeignKey(ur => ur.RoleId).IsRequired();
+
+                // Each Role can have many associated RoleClaims
+                entity.HasMany<ApplicationRoleClaim>().WithOne().HasForeignKey(rc => rc.RoleId).IsRequired();
+            });
+
+            modelBuilder.Entity<ApplicationUserClaim>(entity =>
+            {
+                entity.ToTable("userClaims");
+
+                // Primary key
+                entity.HasKey(uc => uc.Id);
+                entity.Property(uc => uc.Id).HasColumnName("id");
+
+                entity.Property(uc => uc.UserId).HasColumnName("userId");
+                entity.Property(uc => uc.ClaimType).HasColumnName("claimType");
+                entity.Property(uc => uc.ClaimValue).HasColumnName("claimValue");
+            });
+
+            modelBuilder.Entity<ApplicationUserLogin>(e =>
+            {
+                e.ToTable("userLogins");
+
+                // Composite primary key consisting of the LoginProvider and the key to use
+                // with that provider
+                e.HasKey(l => new { l.LoginProvider, l.ProviderKey });
+
+                // Limit the size of the composite key columns due to common DB restrictions
+                e.Property(l => l.LoginProvider)
+                    .HasColumnName("loginProvider")
+                    .HasMaxLength(128);
+
+                e.Property(l => l.ProviderKey)
+                    .HasColumnName("providerKey")
+                    .HasMaxLength(128);
+
+                e.Property(l => l.ProviderDisplayName).HasColumnName("providerDisplayName");
+                e.Property(l => l.UserId).HasColumnName("userId");
+            });
+
+            modelBuilder.Entity<ApplicationUserToken>(e =>
+            {
+                e.ToTable("userTokens");
+
+                // Composite primary key consisting of the UserId, LoginProvider and Name
+                e.HasKey(t => new { t.UserId, t.LoginProvider, t.Name });
+
+                // Limit the size of the composite key columns due to common DB restrictions
+                e.Property(t => t.LoginProvider)
+                    .HasColumnName("loginProvider")
+                    .HasMaxLength(2048);
+
+                e.Property(t => t.Name)
+                    .HasColumnName("name")
+                    .HasMaxLength(2048);   
+
+                e.Property(t => t.UserId).HasColumnName("userId");
+                e.Property(t => t.Value).HasColumnName("value");        
+            });
+
+            modelBuilder.Entity<ApplicationRoleClaim>(e =>
+            {
+                e.ToTable("roleClaims");
+
+                // Primary key
+                e.HasKey(rc => rc.Id);
+                e.Property(rc => rc.Id).HasColumnName("id");
+
+                e.Property(rc => rc.RoleId).HasColumnName("roleId");
+                e.Property(rc => rc.ClaimType).HasColumnName("claimType");
+                e.Property(rc => rc.ClaimValue).HasColumnName("claimValue");
+            });
+
+            modelBuilder.Entity<ApplicationUserRole>(entity =>
+            {
+                entity.ToTable("userRoles");
+
+                // Primary key
+                entity.HasKey(r => new { r.UserId, r.RoleId });
+
+                entity.Property(r => r.RoleId).HasColumnName("roleId");
+                entity.Property(r => r.UserId).HasColumnName("userId");
+            });
 
             // Custom Keys
             modelBuilder.Entity<League>(entity =>
@@ -83,7 +258,7 @@ namespace Aerith.Data
                 entity.Property(_ => _.ModifiedBy).HasDefaultValue("AERITH");
                 entity.Property(_ => _.ModifiedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
 
-                entity.HasIndex(_ => new { _.LeagueId, _.SeasonId}).IsUnique();
+                entity.HasIndex(_ => new { _.LeagueId, _.SeasonId }).IsUnique();
             });
 
             modelBuilder.Entity<Round>(entity =>
@@ -93,7 +268,7 @@ namespace Aerith.Data
                 entity.Property(_ => _.ModifiedBy).HasDefaultValue("AERITH");
                 entity.Property(_ => _.ModifiedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
 
-                entity.HasIndex(_ => new { _.TournamentId, _.Value}).IsUnique();
+                entity.HasIndex(_ => new { _.TournamentId, _.Value }).IsUnique();
             });
 
             modelBuilder.Entity<Team>(entity =>
@@ -119,7 +294,7 @@ namespace Aerith.Data
                     .HasPrincipalKey(_ => _.Id)
                     .IsRequired(true)
                     .OnDelete(DeleteBehavior.Cascade);
-                
+
                 entity.HasOne(_ => _.HomeTeam)
                     .WithMany(_ => _.HomeFixtures)
                     .HasForeignKey(_ => _.HomeTeamId)

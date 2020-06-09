@@ -8,42 +8,42 @@ namespace Aerith.Api.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "applicationUsers",
+                name: "applicationRoles",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    id = table.Column<Guid>(nullable: false),
+                    name = table.Column<string>(maxLength: 256, nullable: true),
+                    normalisedName = table.Column<string>(maxLength: 256, nullable: true),
+                    concurrencyStamp = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_applicationUsers", x => x.Id);
+                    table.PrimaryKey("PK_applicationRoles", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetRoles",
+                name: "applicationUsers",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true)
+                    id = table.Column<Guid>(nullable: false),
+                    username = table.Column<string>(maxLength: 256, nullable: true),
+                    normalisedUsername = table.Column<string>(maxLength: 256, nullable: true),
+                    email = table.Column<string>(maxLength: 256, nullable: true),
+                    normalisedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    emailConfirmed = table.Column<bool>(nullable: false),
+                    passwordHash = table.Column<string>(nullable: true),
+                    securityStamp = table.Column<string>(nullable: true),
+                    concurrencyStamp = table.Column<string>(nullable: true),
+                    phoneNumber = table.Column<string>(nullable: true),
+                    phoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    twoFactorEnabled = table.Column<bool>(nullable: false),
+                    lockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    lockoutEnabled = table.Column<bool>(nullable: false),
+                    accessFailedCount = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                    table.PrimaryKey("PK_applicationUsers", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -124,108 +124,108 @@ namespace Aerith.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserClaims",
+                name: "roleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(nullable: false),
-                    ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
+                    roleId = table.Column<Guid>(nullable: false),
+                    claimType = table.Column<string>(nullable: true),
+                    claimValue = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                    table.PrimaryKey("PK_roleClaims", x => x.id);
                     table.ForeignKey(
-                        name: "FK_AspNetUserClaims_applicationUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "applicationUsers",
-                        principalColumn: "Id",
+                        name: "FK_roleClaims_applicationRoles_roleId",
+                        column: x => x.roleId,
+                        principalTable: "applicationRoles",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserLogins",
+                name: "userClaims",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(nullable: false),
-                    ProviderKey = table.Column<string>(nullable: false),
-                    ProviderDisplayName = table.Column<string>(nullable: true),
-                    UserId = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserLogins_applicationUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "applicationUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUserTokens",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(nullable: false),
-                    LoginProvider = table.Column<string>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
-                    Value = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
-                    table.ForeignKey(
-                        name: "FK_AspNetUserTokens_applicationUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "applicationUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
+                    id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(nullable: false),
-                    ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
+                    userId = table.Column<Guid>(nullable: false),
+                    claimType = table.Column<string>(nullable: true),
+                    claimValue = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.PrimaryKey("PK_userClaims", x => x.id);
                     table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
+                        name: "FK_userClaims_applicationUsers_userId",
+                        column: x => x.userId,
+                        principalTable: "applicationUsers",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUserRoles",
+                name: "userLogins",
                 columns: table => new
                 {
-                    UserId = table.Column<string>(nullable: false),
-                    RoleId = table.Column<string>(nullable: false)
+                    loginProvider = table.Column<string>(maxLength: 128, nullable: false),
+                    providerKey = table.Column<string>(maxLength: 128, nullable: false),
+                    providerDisplayName = table.Column<string>(nullable: true),
+                    userId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.PrimaryKey("PK_userLogins", x => new { x.loginProvider, x.providerKey });
                     table.ForeignKey(
-                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
-                        principalColumn: "Id",
+                        name: "FK_userLogins_applicationUsers_userId",
+                        column: x => x.userId,
+                        principalTable: "applicationUsers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "userRoles",
+                columns: table => new
+                {
+                    userId = table.Column<Guid>(nullable: false),
+                    roleId = table.Column<Guid>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_userRoles", x => new { x.userId, x.roleId });
+                    table.ForeignKey(
+                        name: "FK_userRoles_applicationRoles_roleId",
+                        column: x => x.roleId,
+                        principalTable: "applicationRoles",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AspNetUserRoles_applicationUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_userRoles_applicationUsers_userId",
+                        column: x => x.userId,
                         principalTable: "applicationUsers",
-                        principalColumn: "Id",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "userTokens",
+                columns: table => new
+                {
+                    userId = table.Column<Guid>(nullable: false),
+                    loginProvider = table.Column<string>(maxLength: 2048, nullable: false),
+                    name = table.Column<string>(maxLength: 2048, nullable: false),
+                    value = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_userTokens", x => new { x.userId, x.loginProvider, x.name });
+                    table.ForeignKey(
+                        name: "FK_userTokens_applicationUsers_userId",
+                        column: x => x.userId,
+                        principalTable: "applicationUsers",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -268,7 +268,7 @@ namespace Aerith.Api.Migrations
                     modifiedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     isInactive = table.Column<bool>(nullable: false),
                     loginId = table.Column<string>(maxLength: 256, nullable: false),
-                    identityId = table.Column<string>(nullable: true),
+                    identityId = table.Column<Guid>(nullable: false),
                     name = table.Column<string>(maxLength: 256, nullable: true),
                     groupId = table.Column<int>(nullable: true)
                 },
@@ -285,8 +285,8 @@ namespace Aerith.Api.Migrations
                         name: "FK_users_applicationUsers_identityId",
                         column: x => x.identityId,
                         principalTable: "applicationUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -531,46 +531,26 @@ namespace Aerith.Api.Migrations
             migrationBuilder.InsertData(
                 table: "codes",
                 columns: new[] { "id", "createdDate", "isInactive", "name" },
-                values: new object[] { 1, new DateTime(2020, 6, 4, 20, 41, 32, 681, DateTimeKind.Local).AddTicks(2596), false, "Rugby League" });
+                values: new object[] { 1, new DateTime(2020, 6, 9, 21, 36, 15, 727, DateTimeKind.Local).AddTicks(4671), false, "Rugby League" });
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "applicationRoles",
+                column: "normalisedName",
+                unique: true,
+                filter: "[normalisedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 table: "applicationUsers",
-                column: "NormalizedEmail");
+                column: "normalisedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "applicationUsers",
-                column: "NormalizedUserName",
+                column: "normalisedUsername",
                 unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetRoleClaims_RoleId",
-                table: "AspNetRoleClaims",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "RoleNameIndex",
-                table: "AspNetRoles",
-                column: "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserClaims_UserId",
-                table: "AspNetUserClaims",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserLogins_UserId",
-                table: "AspNetUserLogins",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_RoleId",
-                table: "AspNetUserRoles",
-                column: "RoleId");
+                filter: "[normalisedUsername] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_byes_teamId",
@@ -623,6 +603,11 @@ namespace Aerith.Api.Migrations
                 column: "codeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_roleClaims_roleId",
+                table: "roleClaims",
+                column: "roleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_rounds_tournamentId_value",
                 table: "rounds",
                 columns: new[] { "tournamentId", "value" },
@@ -668,6 +653,21 @@ namespace Aerith.Api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_userClaims_userId",
+                table: "userClaims",
+                column: "userId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_userLogins_userId",
+                table: "userLogins",
+                column: "userId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_userRoles_roleId",
+                table: "userRoles",
+                column: "roleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_users_groupId",
                 table: "users",
                 column: "groupId");
@@ -676,27 +676,11 @@ namespace Aerith.Api.Migrations
                 name: "IX_users_identityId",
                 table: "users",
                 column: "identityId",
-                unique: true,
-                filter: "[identityId] IS NOT NULL");
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AspNetRoleClaims");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserClaims");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserLogins");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserRoles");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUserTokens");
-
             migrationBuilder.DropTable(
                 name: "byes");
 
@@ -704,10 +688,22 @@ namespace Aerith.Api.Migrations
                 name: "groupUsers");
 
             migrationBuilder.DropTable(
+                name: "roleClaims");
+
+            migrationBuilder.DropTable(
                 name: "tips");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "userClaims");
+
+            migrationBuilder.DropTable(
+                name: "userLogins");
+
+            migrationBuilder.DropTable(
+                name: "userRoles");
+
+            migrationBuilder.DropTable(
+                name: "userTokens");
 
             migrationBuilder.DropTable(
                 name: "competitions");
@@ -717,6 +713,9 @@ namespace Aerith.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "applicationRoles");
 
             migrationBuilder.DropTable(
                 name: "teams");

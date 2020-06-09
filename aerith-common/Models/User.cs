@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,7 +17,7 @@ namespace Aerith.Common.Models
         public string LoginId { get; set; }
 
         [Column("identityId")]
-        public string IdentityId { get; set; }
+        public Guid IdentityId { get; set; }
 
         [MaxLength(256)]
         [Column("name")]
