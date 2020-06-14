@@ -17,6 +17,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -48,6 +50,7 @@ namespace Aerith.Api
 
             // Settings
             services.Configure<JwtSettings>(Configuration.GetSection("Jwt"));
+            services.Configure<AerithSettings>(Configuration.GetSection("Aerith"));
 
             // DB Repositories
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
@@ -97,10 +100,13 @@ namespace Aerith.Api
                 o.Password.RequireNonAlphanumeric = false;
                 o.Password.RequiredLength = 6;
             })
+            .AddRoles<ApplicationRole>()
             .AddEntityFrameworkStores<AerithContext>()
             .AddDefaultTokenProviders();
 
-            var issuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:HmacSecretKey"]));
+            var jwtSettings = Configuration.GetSection("Jwt");
+
+            var issuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings[nameof(JwtSettings.HmacSecretKey)]));
 
             // Authentication
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -109,27 +115,28 @@ namespace Aerith.Api
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         //* Move these into Settings
-                        ClockSkew = TimeSpan.FromMinutes(5),
+                        ClockSkew = TimeSpan.FromMinutes(double.Parse(jwtSettings[nameof(JwtSettings.ClockSkewMinutes)])),
                         IssuerSigningKey = issuerSigningKey,
-                        RequireSignedTokens = true,
-                        RequireExpirationTime = true,
-                        ValidateLifetime = true,
-                        ValidateAudience = true,
-                        ValidAudience = "api://default",
-                        ValidateIssuer = true,
-                        ValidIssuer = "https://aerith-api"
+                        RequireSignedTokens = bool.Parse(jwtSettings[nameof(JwtSettings.RequireSignedTokens)]),
+                        RequireExpirationTime = bool.Parse(jwtSettings[nameof(JwtSettings.RequireExpirationTime)]),
+                        ValidateLifetime = bool.Parse(jwtSettings[nameof(JwtSettings.ValidateLifetime)]),
+                        ValidateAudience = bool.Parse(jwtSettings[nameof(JwtSettings.ValidateAudience)]),
+                        ValidAudience = jwtSettings[nameof(JwtSettings.Audience)],
+                        ValidateIssuer = bool.Parse(jwtSettings[nameof(JwtSettings.ValidateIssuer)]),
+                        ValidIssuer = jwtSettings[nameof(JwtSettings.Issuer)]
                     };
-                    
-                    options.Authority = "https://aerith-api";
-                    options.Audience = "api://default";
                 });
             
             // Automapper
             services.AddAutoMapper(typeof(Startup));
+
+            IdentityModelEventSource.ShowPII = true;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

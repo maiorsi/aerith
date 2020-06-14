@@ -20,7 +20,8 @@
         "env": {
             "ASPNETCORE_ENVIRONMENT": "Development",
             "AERITH_Jwt__HmacSecretKey": "GRQKzLUn9w59LpXEbsESa8gtJnN3hyspq7EV4J6Fz3FjBk994r",
-            "AERITH_ConnectionStrings__AerithDB": "Server=LOCALHOST;Database=Aerith;User Id=aerithuser;Password=MyP@ssword1;"
+            "AERITH_ConnectionStrings__AerithDB": "Server=LOCALHOST;Database=Aerith;User Id=aerithuser;Password=MyP@ssword1;",
+            "AERITH_Aerith__AdminPassword": "P@ssword01"
         },
         "sourceFileMap": {
             "/Views": "${workspaceFolder}/Views"

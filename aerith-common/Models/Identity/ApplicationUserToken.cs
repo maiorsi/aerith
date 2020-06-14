@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Aerith.Common.Models.Identity
 {
-    public class ApplicationUserToken : IdentityUserToken<Guid>
+    public class ApplicationUserToken : IdentityUserToken<long>
     {
         
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using Aerith.Common.Models.Identity;
 
 namespace Aerith.Common.Models
@@ -9,22 +10,21 @@ namespace Aerith.Common.Models
     [Table("users")]
     public class User : MetaDbType
     {
-        // Properties
-        [Required]
-        [Index]
-        [MaxLength(256)]
-        [Column("loginId")]
-        public string LoginId { get; set; }
+        public User()
+        {
+            this.GroupUsers = new List<GroupUser>();
+        }
 
+        // Properties
         [Column("identityId")]
-        public Guid IdentityId { get; set; }
+        public long IdentityId { get; set; }
 
         [MaxLength(256)]
         [Column("name")]
         public string Name { get; set; }
 
         [Column("groupId")]
-        public int? GroupId { get; set; }
+        public long? GroupId { get; set; }
 
         // Navigation Properties
         [ForeignKey("IdentityId")]
@@ -35,5 +35,7 @@ namespace Aerith.Common.Models
 
         [InverseProperty("User")]
         public virtual List<Tip> Tips { get; set; }
+
+        public virtual List<Group> Groups { get { return GroupUsers.Select(_ => _.Group).ToList(); }}
     }
 }

@@ -8,10 +8,10 @@ namespace Aerith.Common.Models {
     {
         // Properties
         [Column("roundId")]
-        public int RoundId { get; set; }
+        public long RoundId { get; set; }
 
         [Column("teamId")]
-        public int TeamId { get; set; }
+        public long TeamId { get; set; }
 
         // Navigation Properties
         [Required]

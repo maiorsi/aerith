@@ -20,7 +20,7 @@ namespace Aerith.Common.Models
         public int Value { get; set; }
 
         [Column("tournamentId")]
-        public int TournamentId { get; set; }
+        public long TournamentId { get; set; }
 
         // Navigation Properties
         [Required]

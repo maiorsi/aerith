@@ -8,17 +8,20 @@ import { AxiosResponse } from "axios";
 export interface AuthState {
   token: string;
   status: string;
+  loading: boolean;
 }
 
 const state: AuthState = {
   token: localStorage.getItem("auth-token") || "",
-  status: ""
+  status: "",
+  loading: false
 };
 
 const getters: GetterTree<AuthState, any> = {
   isAuthenticated: (state: AuthState) => !!state.token,
   authStatus: (state: AuthState) => state.status,
-  authToken: (state: AuthState) => state.token
+  authToken: (state: AuthState) => state.token,
+  authLoading: (state: AuthState) => state.loading
 };
 
 const actions: ActionTree<AuthState, any> = {
@@ -33,6 +36,7 @@ const actions: ActionTree<AuthState, any> = {
           localStorage.setItem("auth-token", response.data.token);
           commit("authSuccess", response);
           EventBus.$emit("authenticated");
+          dispatch('user/userRequest', null, { root: true });
           resolve(response);
         })
         .catch((exception: Error) => {
@@ -54,16 +58,20 @@ const actions: ActionTree<AuthState, any> = {
 const mutations: MutationTree<AuthState> = {
   authRequest: (authState: AuthState) => {
     authState.status = "Authenticating...";
+    authState.loading = true;
   },
   authSuccess: (authState: AuthState, authToken: string) => {
     authState.status = "Successfully authenticated.";
     authState.token = authToken;
+    authState.loading = false;
   },
   authError: (authState: AuthState) => {
-    authState.status = "Authentication failed.";
+    authState.status = "Authentication failed!";
+    authState.loading = false;
   },
   authLogout: (authState: AuthState) => {
     authState.token = "";
+    authState.loading = false;
   }
 };
 

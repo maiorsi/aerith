@@ -14,10 +14,10 @@ namespace Aerith.Common.Models
         }
         // Properties
         [Column("leagueId")]
-        public int LeagueId { get; set; }
+        public long LeagueId { get; set; }
 
         [Column("seasonId")]
-        public int SeasonId { get; set; }
+        public long SeasonId { get; set; }
 
         // Navigation Properties
         [Required]

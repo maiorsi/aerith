@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Aerith.Common.Models;
 using Aerith.Data.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -12,7 +13,7 @@ namespace Aerith.Api.Controllers
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    public class BaseController<T> : ControllerBase where T: class
+    public class BaseController<T> : ControllerBase where T: MetaDbType
     {
         private readonly ILogger<BaseController<T>> _logger;
         private readonly IRepository<T> _repository;
@@ -31,11 +32,11 @@ namespace Aerith.Api.Controllers
         [HttpGet]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<T>>> Get_1_0(ApiVersion version)
+        public async Task<ActionResult<IEnumerable<T>>> Get_1_0(ApiVersion version, [FromQuery] bool eager = false)
         {
             _logger.LogTrace("GET api/v{}.{}/[controller]", version.MajorVersion, version.MinorVersion);
 
-            return Ok(await _repository.GetAllAsync());
+            return Ok(await _repository.GetAllAsync(eager));
         }
 
         /// <summary>
@@ -44,13 +45,14 @@ namespace Aerith.Api.Controllers
         /// <param name="id"></param>
         /// <param name="version"></param>
         /// <returns></returns>
-        [HttpGet(":id")]
+        [HttpGet("{id:long}")]
         [MapToApiVersion("1.0")]
-        public async Task<ActionResult<T>> GetOne_1_0([FromRoute] int id, ApiVersion version)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<T>> GetOne_1_0([FromRoute] long id,  ApiVersion version, [FromQuery] bool eager = false)
         {
             _logger.LogTrace("GET api/v{}.{}/[controller]/{}", version.MajorVersion, version.MinorVersion, id);
             
-            return await _repository.GetAsync(id);
+            return await _repository.GetAsync(id, eager);
         }
 
         /// <summary>
@@ -61,6 +63,8 @@ namespace Aerith.Api.Controllers
         /// <returns></returns>
         [HttpPost()]
         [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<T>> Create_1_0([FromBody] T entity, ApiVersion version)
         {
             _logger.LogTrace("POST api/v{}.{}/[controller]", version.MajorVersion, version.MinorVersion);
@@ -79,9 +83,11 @@ namespace Aerith.Api.Controllers
         /// <param name="entity"></param>
         /// <param name="version"></param>
         /// <returns></returns>
-        [HttpPut(":id")]
+        [HttpPut("{id:long}")]
         [MapToApiVersion("1.0")]
-        public async Task<ActionResult<T>> Overwrite_1_0([FromRoute] int id, [FromBody] T entity, ApiVersion version)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<T>> Overwrite_1_0([FromRoute] long id, [FromBody] T entity, ApiVersion version)
         {
             _logger.LogTrace("PUT api/v{}.{}/[controller]/{}", version.MajorVersion, version.MinorVersion, id);
             
@@ -100,9 +106,11 @@ namespace Aerith.Api.Controllers
         /// <param name="jsonPatch"></param>
         /// <param name="version"></param>
         /// <returns></returns>
-        [HttpPatch(":id")]
+        [HttpPatch("{id:long}")]
         [MapToApiVersion("1.0")]
-        public async Task<ActionResult<T>> Update_1_0([FromRoute] int id, [FromBody] JsonPatchDocument<T> jsonPatch, ApiVersion version)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<T>> Update_1_0([FromRoute] long id, [FromBody] JsonPatchDocument<T> jsonPatch, ApiVersion version)
         {
             _logger.LogTrace("PATCH api/v{}.{}/[controller]/{}", version.MajorVersion, version.MinorVersion, id);
             
@@ -118,9 +126,11 @@ namespace Aerith.Api.Controllers
             return Ok(await _repository.UpdateAsync(u));
         }
 
-        [HttpDelete(":id")]
+        [HttpDelete("{id:long}")]
         [MapToApiVersion("1.0")]
-        public async Task<ActionResult> Delete_1_0([FromRoute] int id, ApiVersion version)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> Delete_1_0([FromRoute] long id, ApiVersion version)
         {
             _logger.LogTrace("DELETE api/v{}.{}/[controller]/{}", version.MajorVersion, version.MinorVersion, id);
             

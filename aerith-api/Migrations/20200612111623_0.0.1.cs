@@ -11,7 +11,8 @@ namespace Aerith.Api.Migrations
                 name: "applicationRoles",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(nullable: false),
+                    id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     name = table.Column<string>(maxLength: 256, nullable: true),
                     normalisedName = table.Column<string>(maxLength: 256, nullable: true),
                     concurrencyStamp = table.Column<string>(nullable: true)
@@ -25,7 +26,8 @@ namespace Aerith.Api.Migrations
                 name: "applicationUsers",
                 columns: table => new
                 {
-                    id = table.Column<Guid>(nullable: false),
+                    id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     username = table.Column<string>(maxLength: 256, nullable: true),
                     normalisedUsername = table.Column<string>(maxLength: 256, nullable: true),
                     email = table.Column<string>(maxLength: 256, nullable: true),
@@ -50,7 +52,7 @@ namespace Aerith.Api.Migrations
                 name: "codes",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
@@ -68,7 +70,7 @@ namespace Aerith.Api.Migrations
                 name: "groups",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
@@ -86,7 +88,7 @@ namespace Aerith.Api.Migrations
                 name: "seasons",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
@@ -106,7 +108,7 @@ namespace Aerith.Api.Migrations
                 name: "teams",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
@@ -129,13 +131,20 @@ namespace Aerith.Api.Migrations
                 {
                     id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    roleId = table.Column<Guid>(nullable: false),
+                    roleId = table.Column<long>(nullable: false),
                     claimType = table.Column<string>(nullable: true),
-                    claimValue = table.Column<string>(nullable: true)
+                    claimValue = table.Column<string>(nullable: true),
+                    ApplicationRoleId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_roleClaims", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_roleClaims_applicationRoles_ApplicationRoleId",
+                        column: x => x.ApplicationRoleId,
+                        principalTable: "applicationRoles",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_roleClaims_applicationRoles_roleId",
                         column: x => x.roleId,
@@ -150,13 +159,20 @@ namespace Aerith.Api.Migrations
                 {
                     id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    userId = table.Column<Guid>(nullable: false),
+                    userId = table.Column<long>(nullable: false),
                     claimType = table.Column<string>(nullable: true),
-                    claimValue = table.Column<string>(nullable: true)
+                    claimValue = table.Column<string>(nullable: true),
+                    ApplicationUserId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_userClaims", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_userClaims_applicationUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "applicationUsers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_userClaims_applicationUsers_userId",
                         column: x => x.userId,
@@ -172,11 +188,18 @@ namespace Aerith.Api.Migrations
                     loginProvider = table.Column<string>(maxLength: 128, nullable: false),
                     providerKey = table.Column<string>(maxLength: 128, nullable: false),
                     providerDisplayName = table.Column<string>(nullable: true),
-                    userId = table.Column<Guid>(nullable: false)
+                    userId = table.Column<long>(nullable: false),
+                    ApplicationUserId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_userLogins", x => new { x.loginProvider, x.providerKey });
+                    table.ForeignKey(
+                        name: "FK_userLogins_applicationUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "applicationUsers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_userLogins_applicationUsers_userId",
                         column: x => x.userId,
@@ -189,8 +212,10 @@ namespace Aerith.Api.Migrations
                 name: "userRoles",
                 columns: table => new
                 {
-                    userId = table.Column<Guid>(nullable: false),
-                    roleId = table.Column<Guid>(nullable: false)
+                    userId = table.Column<long>(nullable: false),
+                    roleId = table.Column<long>(nullable: false),
+                    UserId1 = table.Column<long>(nullable: true),
+                    RoleId1 = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -202,25 +227,44 @@ namespace Aerith.Api.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_userRoles_applicationRoles_RoleId1",
+                        column: x => x.RoleId1,
+                        principalTable: "applicationRoles",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_userRoles_applicationUsers_userId",
                         column: x => x.userId,
                         principalTable: "applicationUsers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_userRoles_applicationUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "applicationUsers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "userTokens",
                 columns: table => new
                 {
-                    userId = table.Column<Guid>(nullable: false),
+                    userId = table.Column<long>(nullable: false),
                     loginProvider = table.Column<string>(maxLength: 2048, nullable: false),
                     name = table.Column<string>(maxLength: 2048, nullable: false),
-                    value = table.Column<string>(nullable: true)
+                    value = table.Column<string>(nullable: true),
+                    ApplicationUserId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_userTokens", x => new { x.userId, x.loginProvider, x.name });
+                    table.ForeignKey(
+                        name: "FK_userTokens_applicationUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "applicationUsers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_userTokens_applicationUsers_userId",
                         column: x => x.userId,
@@ -233,14 +277,14 @@ namespace Aerith.Api.Migrations
                 name: "leagues",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     modifiedBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     modifiedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     isInactive = table.Column<bool>(nullable: false),
-                    codeId = table.Column<int>(nullable: false),
+                    codeId = table.Column<long>(nullable: false),
                     value = table.Column<int>(nullable: false),
                     name = table.Column<string>(maxLength: 256, nullable: true)
                 },
@@ -260,17 +304,16 @@ namespace Aerith.Api.Migrations
                 name: "users",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     modifiedBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     modifiedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     isInactive = table.Column<bool>(nullable: false),
-                    loginId = table.Column<string>(maxLength: 256, nullable: false),
-                    identityId = table.Column<Guid>(nullable: false),
+                    identityId = table.Column<long>(nullable: false),
                     name = table.Column<string>(maxLength: 256, nullable: true),
-                    groupId = table.Column<int>(nullable: true)
+                    groupId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -293,15 +336,15 @@ namespace Aerith.Api.Migrations
                 name: "byes",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     modifiedBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     modifiedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     isInactive = table.Column<bool>(nullable: false),
-                    roundId = table.Column<int>(nullable: false),
-                    teamId = table.Column<int>(nullable: false)
+                    roundId = table.Column<long>(nullable: false),
+                    teamId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -318,15 +361,15 @@ namespace Aerith.Api.Migrations
                 name: "tournaments",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     modifiedBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     modifiedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     isInactive = table.Column<bool>(nullable: false),
-                    leagueId = table.Column<int>(nullable: false),
-                    seasonId = table.Column<int>(nullable: false)
+                    leagueId = table.Column<long>(nullable: false),
+                    seasonId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -349,15 +392,15 @@ namespace Aerith.Api.Migrations
                 name: "groupUsers",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     modifiedBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     modifiedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     isInactive = table.Column<bool>(nullable: false),
-                    userId = table.Column<int>(nullable: false),
-                    groupId = table.Column<int>(nullable: false)
+                    userId = table.Column<long>(nullable: false),
+                    groupId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -380,15 +423,15 @@ namespace Aerith.Api.Migrations
                 name: "competitions",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     modifiedBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     modifiedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     isInactive = table.Column<bool>(nullable: false),
-                    groupId = table.Column<int>(nullable: false),
-                    tournamentId = table.Column<int>(nullable: false)
+                    groupId = table.Column<long>(nullable: false),
+                    tournamentId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -411,7 +454,7 @@ namespace Aerith.Api.Migrations
                 name: "rounds",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
@@ -420,7 +463,7 @@ namespace Aerith.Api.Migrations
                     isInactive = table.Column<bool>(nullable: false),
                     name = table.Column<string>(nullable: true),
                     value = table.Column<int>(nullable: false),
-                    tournamentId = table.Column<int>(nullable: false)
+                    tournamentId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -437,20 +480,20 @@ namespace Aerith.Api.Migrations
                 name: "fixtures",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     modifiedBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     modifiedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     isInactive = table.Column<bool>(nullable: false),
-                    roundId = table.Column<int>(nullable: false),
+                    roundId = table.Column<long>(nullable: false),
                     matchState = table.Column<string>(maxLength: 64, nullable: true),
                     venue = table.Column<string>(maxLength: 256, nullable: true),
                     url = table.Column<string>(maxLength: 1024, nullable: true),
-                    homeTeamId = table.Column<int>(nullable: false),
-                    awayTeamId = table.Column<int>(nullable: false),
-                    teamId = table.Column<int>(nullable: true),
+                    homeTeamId = table.Column<long>(nullable: false),
+                    awayTeamId = table.Column<long>(nullable: false),
+                    teamId = table.Column<long>(nullable: true),
                     homeTeamScore = table.Column<int>(nullable: false),
                     awayTeamScore = table.Column<int>(nullable: false),
                     kickoffTime = table.Column<DateTime>(nullable: false),
@@ -488,17 +531,17 @@ namespace Aerith.Api.Migrations
                 name: "tips",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     modifiedBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     modifiedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     isInactive = table.Column<bool>(nullable: false),
-                    userId = table.Column<int>(nullable: false),
-                    fixtureId = table.Column<int>(nullable: false),
-                    competitionId = table.Column<int>(nullable: false),
-                    selectedTeamId = table.Column<int>(nullable: false)
+                    userId = table.Column<long>(nullable: false),
+                    fixtureId = table.Column<long>(nullable: false),
+                    competitionId = table.Column<long>(nullable: false),
+                    selectedTeamId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -529,9 +572,28 @@ namespace Aerith.Api.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "applicationRoles",
+                columns: new[] { "id", "concurrencyStamp", "name", "normalisedName" },
+                values: new object[,]
+                {
+                    { 1L, "dfde25b6-1ae7-4b6d-9c3b-49a137130137", "Administrators", "ADMINISTRATORS" },
+                    { 2L, "a3b2c7e6-c86a-451f-8060-425717e6be70", "Users", "USERS" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "applicationUsers",
+                columns: new[] { "id", "accessFailedCount", "concurrencyStamp", "email", "emailConfirmed", "lockoutEnabled", "lockoutEnd", "normalisedEmail", "normalisedUsername", "passwordHash", "phoneNumber", "phoneNumberConfirmed", "securityStamp", "twoFactorEnabled", "username" },
+                values: new object[] { 1L, 0, "6ab64169-26f6-456c-9b24-cc05c1cf1b4a", null, false, false, null, null, "ADMIN", "AQAAAAEAACcQAAAAEB2PdvJYyIJBrL5CrstJcZRU92tMiz5HBW1MP2kFejCEpPEzFIKofLIABoE+xHxGew==", null, false, null, false, "admin" });
+
+            migrationBuilder.InsertData(
                 table: "codes",
                 columns: new[] { "id", "createdDate", "isInactive", "name" },
-                values: new object[] { 1, new DateTime(2020, 6, 9, 21, 36, 15, 727, DateTimeKind.Local).AddTicks(4671), false, "Rugby League" });
+                values: new object[] { 1L, new DateTime(2020, 6, 12, 21, 16, 23, 50, DateTimeKind.Local).AddTicks(2387), false, "Rugby League" });
+
+            migrationBuilder.InsertData(
+                table: "userRoles",
+                columns: new[] { "userId", "roleId", "RoleId1", "UserId1" },
+                values: new object[] { 1L, 1L, null, null });
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
@@ -603,6 +665,11 @@ namespace Aerith.Api.Migrations
                 column: "codeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_roleClaims_ApplicationRoleId",
+                table: "roleClaims",
+                column: "ApplicationRoleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_roleClaims_roleId",
                 table: "roleClaims",
                 column: "roleId");
@@ -653,9 +720,19 @@ namespace Aerith.Api.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_userClaims_ApplicationUserId",
+                table: "userClaims",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_userClaims_userId",
                 table: "userClaims",
                 column: "userId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_userLogins_ApplicationUserId",
+                table: "userLogins",
+                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_userLogins_userId",
@@ -668,6 +745,16 @@ namespace Aerith.Api.Migrations
                 column: "roleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_userRoles_RoleId1",
+                table: "userRoles",
+                column: "RoleId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_userRoles_UserId1",
+                table: "userRoles",
+                column: "UserId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_users_groupId",
                 table: "users",
                 column: "groupId");
@@ -677,6 +764,11 @@ namespace Aerith.Api.Migrations
                 table: "users",
                 column: "identityId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_userTokens_ApplicationUserId",
+                table: "userTokens",
+                column: "ApplicationUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

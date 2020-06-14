@@ -7,10 +7,10 @@ namespace Aerith.Common.Models
     {
         // Properties
         [Column("userId")]
-        public int UserId { get; set; }
+        public long UserId { get; set; }
 
         [Column("groupId")]
-        public int GroupId { get; set; }
+        public long GroupId { get; set; }
 
         // Navigation Properties
         [ForeignKey("UserId")]

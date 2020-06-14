@@ -1,5 +1,6 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +44,13 @@ namespace Aerith.Api.Services
                 {"exp", exp},
                 {"jti", Guid.NewGuid().ToString("N")}
             };
+
+            Claim guidClaim = claimsIdentity.Claims.FirstOrDefault(_ => _.Type.Equals("guid"));
+
+            if(guidClaim != null)
+            {
+                payload.Add(guidClaim.Type, guidClaim.Value);
+            }
 
             var jwtHeader = new JwtHeader(_signingCredentials);
 

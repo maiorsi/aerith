@@ -42,7 +42,7 @@ export default Vue.extend({
     login() {
       this.$store.dispatch("auth/authenticate", this.credentials).then(() => {
         if (this.$route.query.redirect) {
-          this.$router.push(this.$route.query.redirect);
+          this.$router.push(this.$route.query.redirect || '');
         } else {
           this.$router.push("/home");
         }

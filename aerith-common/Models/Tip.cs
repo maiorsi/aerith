@@ -10,19 +10,19 @@ namespace Aerith.Common.Models
         [Required]
         [Index]
         [Column("userId")]
-        public int UserId { get; set; }
+        public long UserId { get; set; }
 
         [Required]
         [Column("fixtureId")]
-        public int FixtureId { get; set; }
+        public long FixtureId { get; set; }
 
         [Required]
         [Column("competitionId")]
-        public int CompetitionId { get; set; }
+        public long CompetitionId { get; set; }
 
         [Required]
         [Column("selectedTeamId")]
-        public int SelectedTeamId { get; set; }
+        public long? SelectedTeamId { get; set; }
 
         // Navigation Properties
         [Required]

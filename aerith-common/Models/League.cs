@@ -14,7 +14,7 @@ namespace Aerith.Common.Models
         
         [Required]
         [Column("codeId")]
-        public int CodeId { get; set; }
+        public long CodeId { get; set; }
 
         [Index]
         [Column("value")]

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Aerith.Common.Models.Identity
 {
-    public class ApplicationUserClaim : IdentityUserClaim<Guid>
+    public class ApplicationUserClaim : IdentityUserClaim<long>
     {
         
     }

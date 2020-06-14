@@ -27,14 +27,44 @@ namespace Aerith.Data.Services
             return item;
         }
 
-        public async Task<TEntity> GetAsync(int id)
+        public async Task<TEntity> GetAsync(long id, bool eager = false)
         {
-            return await _dbSet.FirstOrDefaultAsync(_ => _.Id == id);
+            var query = _dbSet.AsQueryable();
+
+            if (eager)
+            {
+                var navigations = _context.Model.FindEntityType(typeof(TEntity))
+                    .GetDerivedTypesInclusive()
+                    .SelectMany(type => type.GetNavigations())
+                    .Distinct();
+
+                foreach (var property in navigations)
+                {
+                    query = query.Include(property.Name);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync(_ => _.Id == id);
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        public async Task<IEnumerable<TEntity>> GetAllAsync(bool eager = false)
         {
-            return await _dbSet.ToListAsync();
+            var query = _dbSet.AsQueryable();
+
+            if (eager)
+            {
+                var navigations = _context.Model.FindEntityType(typeof(TEntity))
+                    .GetDerivedTypesInclusive()
+                    .SelectMany(type => type.GetNavigations())
+                    .Distinct();
+
+                foreach (var property in navigations)
+                {
+                    query = query.Include(property.Name);
+                }
+            }
+
+            return await query.ToListAsync();
         }
 
         public AerithContext GetContext()
@@ -47,7 +77,7 @@ namespace Aerith.Data.Services
             return _dbSet.AsQueryable();
         }
 
-        public async Task<bool> RemoveAsync(int id)
+        public async Task<bool> RemoveAsync(long id)
         {
             _dbSet.Remove(await _dbSet.FindAsync(id));
             

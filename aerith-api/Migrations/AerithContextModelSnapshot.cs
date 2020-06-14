@@ -21,10 +21,10 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.Bye", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedBy")
@@ -57,13 +57,13 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("RoundId")
+                    b.Property<long>("RoundId")
                         .HasColumnName("roundId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("TeamId")
+                    b.Property<long>("TeamId")
                         .HasColumnName("teamId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -74,10 +74,10 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.Code", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedBy")
@@ -122,20 +122,20 @@ namespace Aerith.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            CreatedDate = new DateTime(2020, 6, 9, 21, 36, 15, 727, DateTimeKind.Local).AddTicks(4671),
+                            Id = 1L,
+                            CreatedDate = new DateTime(2020, 6, 12, 21, 16, 23, 50, DateTimeKind.Local).AddTicks(2387),
                             IsInactive = false,
-                            ModifiedDate = new DateTime(2020, 6, 9, 21, 36, 15, 730, DateTimeKind.Local).AddTicks(9696),
+                            ModifiedDate = new DateTime(2020, 6, 12, 21, 16, 23, 54, DateTimeKind.Local).AddTicks(809),
                             Name = "Rugby League"
                         });
                 });
 
             modelBuilder.Entity("Aerith.Common.Models.Competition", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedBy")
@@ -151,9 +151,9 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("GroupId")
+                    b.Property<long>("GroupId")
                         .HasColumnName("groupId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsInactive")
                         .HasColumnName("isInactive")
@@ -172,9 +172,9 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("TournamentId")
+                    b.Property<long>("TournamentId")
                         .HasColumnName("tournamentId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -187,15 +187,15 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.Fixture", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AwayTeamId")
+                    b.Property<long>("AwayTeamId")
                         .HasColumnName("awayTeamId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<int>("AwayTeamScore")
                         .HasColumnName("awayTeamScore")
@@ -218,9 +218,9 @@ namespace Aerith.Api.Migrations
                         .HasColumnName("gameMinutes")
                         .HasColumnType("int");
 
-                    b.Property<int>("HomeTeamId")
+                    b.Property<long>("HomeTeamId")
                         .HasColumnName("homeTeamId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<int>("HomeTeamScore")
                         .HasColumnName("homeTeamScore")
@@ -252,13 +252,13 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("RoundId")
+                    b.Property<long>("RoundId")
                         .HasColumnName("roundId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    b.Property<int?>("TeamId")
+                    b.Property<long?>("TeamId")
                         .HasColumnName("teamId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("URL")
                         .HasColumnName("url")
@@ -285,10 +285,10 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.Group", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedBy")
@@ -333,10 +333,10 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.GroupUser", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedBy")
@@ -352,9 +352,9 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("GroupId")
+                    b.Property<long>("GroupId")
                         .HasColumnName("groupId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsInactive")
                         .HasColumnName("isInactive")
@@ -373,9 +373,9 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("UserId")
+                    b.Property<long>("UserId")
                         .HasColumnName("userId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -388,10 +388,11 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.Identity.ApplicationRole", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -416,6 +417,22 @@ namespace Aerith.Api.Migrations
                         .HasFilter("[normalisedName] IS NOT NULL");
 
                     b.ToTable("applicationRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            ConcurrencyStamp = "dfde25b6-1ae7-4b6d-9c3b-49a137130137",
+                            Name = "Administrators",
+                            NormalizedName = "ADMINISTRATORS"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            ConcurrencyStamp = "a3b2c7e6-c86a-451f-8060-425717e6be70",
+                            Name = "Users",
+                            NormalizedName = "USERS"
+                        });
                 });
 
             modelBuilder.Entity("Aerith.Common.Models.Identity.ApplicationRoleClaim", b =>
@@ -426,6 +443,9 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<long?>("ApplicationRoleId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("ClaimType")
                         .HasColumnName("claimType")
                         .HasColumnType("nvarchar(max)");
@@ -434,11 +454,13 @@ namespace Aerith.Api.Migrations
                         .HasColumnName("claimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("RoleId")
+                    b.Property<long>("RoleId")
                         .HasColumnName("roleId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationRoleId");
 
                     b.HasIndex("RoleId");
 
@@ -447,10 +469,11 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.Identity.ApplicationUser", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnName("accessFailedCount")
@@ -524,6 +547,21 @@ namespace Aerith.Api.Migrations
                         .HasFilter("[normalisedUsername] IS NOT NULL");
 
                     b.ToTable("applicationUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "6ab64169-26f6-456c-9b24-cc05c1cf1b4a",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAEAACcQAAAAEB2PdvJYyIJBrL5CrstJcZRU92tMiz5HBW1MP2kFejCEpPEzFIKofLIABoE+xHxGew==",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "admin"
+                        });
                 });
 
             modelBuilder.Entity("Aerith.Common.Models.Identity.ApplicationUserClaim", b =>
@@ -534,6 +572,9 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<long?>("ApplicationUserId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("ClaimType")
                         .HasColumnName("claimType")
                         .HasColumnType("nvarchar(max)");
@@ -542,11 +583,13 @@ namespace Aerith.Api.Migrations
                         .HasColumnName("claimValue")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<long>("UserId")
                         .HasColumnName("userId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("UserId");
 
@@ -565,15 +608,20 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("nvarchar(128)")
                         .HasMaxLength(128);
 
+                    b.Property<long?>("ApplicationUserId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnName("providerDisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<long>("UserId")
                         .HasColumnName("userId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
 
                     b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.HasIndex("UserId");
 
@@ -582,26 +630,43 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.Identity.ApplicationUserRole", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<long>("UserId")
                         .HasColumnName("userId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("RoleId")
+                    b.Property<long>("RoleId")
                         .HasColumnName("roleId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("RoleId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("UserId1")
+                        .HasColumnType("bigint");
 
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
 
+                    b.HasIndex("RoleId1");
+
+                    b.HasIndex("UserId1");
+
                     b.ToTable("userRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1L,
+                            RoleId = 1L
+                        });
                 });
 
             modelBuilder.Entity("Aerith.Common.Models.Identity.ApplicationUserToken", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<long>("UserId")
                         .HasColumnName("userId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnName("loginProvider")
@@ -613,26 +678,31 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("nvarchar(2048)")
                         .HasMaxLength(2048);
 
+                    b.Property<long?>("ApplicationUserId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Value")
                         .HasColumnName("value")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
+                    b.HasIndex("ApplicationUserId");
+
                     b.ToTable("userTokens");
                 });
 
             modelBuilder.Entity("Aerith.Common.Models.League", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CodeId")
+                    b.Property<long>("CodeId")
                         .HasColumnName("codeId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("CreatedBy")
                         .ValueGeneratedOnAdd()
@@ -684,10 +754,10 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.Round", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedBy")
@@ -724,9 +794,9 @@ namespace Aerith.Api.Migrations
                         .HasColumnName("name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TournamentId")
+                    b.Property<long>("TournamentId")
                         .HasColumnName("tournamentId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<int>("Value")
                         .HasColumnName("value")
@@ -742,10 +812,10 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.Season", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedBy")
@@ -796,10 +866,10 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.Team", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<byte[]>("BadgeSVG")
@@ -858,15 +928,15 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.Tip", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CompetitionId")
+                    b.Property<long>("CompetitionId")
                         .HasColumnName("competitionId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("CreatedBy")
                         .ValueGeneratedOnAdd()
@@ -881,9 +951,9 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("FixtureId")
+                    b.Property<long>("FixtureId")
                         .HasColumnName("fixtureId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsInactive")
                         .HasColumnName("isInactive")
@@ -902,13 +972,14 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("SelectedTeamId")
+                    b.Property<long?>("SelectedTeamId")
+                        .IsRequired()
                         .HasColumnName("selectedTeamId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    b.Property<int>("UserId")
+                    b.Property<long>("UserId")
                         .HasColumnName("userId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -926,10 +997,10 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.Tournament", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedBy")
@@ -949,9 +1020,9 @@ namespace Aerith.Api.Migrations
                         .HasColumnName("isInactive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("LeagueId")
+                    b.Property<long>("LeagueId")
                         .HasColumnName("leagueId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<string>("ModifiedBy")
                         .ValueGeneratedOnAdd()
@@ -966,9 +1037,9 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int>("SeasonId")
+                    b.Property<long>("SeasonId")
                         .HasColumnName("seasonId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -982,10 +1053,10 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("int")
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CreatedBy")
@@ -1001,23 +1072,17 @@ namespace Aerith.Api.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETDATE()");
 
-                    b.Property<int?>("GroupId")
+                    b.Property<long?>("GroupId")
                         .HasColumnName("groupId")
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
-                    b.Property<Guid>("IdentityId")
+                    b.Property<long>("IdentityId")
                         .HasColumnName("identityId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsInactive")
                         .HasColumnName("isInactive")
                         .HasColumnType("bit");
-
-                    b.Property<string>("LoginId")
-                        .IsRequired()
-                        .HasColumnName("loginId")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
 
                     b.Property<string>("ModifiedBy")
                         .ValueGeneratedOnAdd()
@@ -1114,6 +1179,10 @@ namespace Aerith.Api.Migrations
             modelBuilder.Entity("Aerith.Common.Models.Identity.ApplicationRoleClaim", b =>
                 {
                     b.HasOne("Aerith.Common.Models.Identity.ApplicationRole", null)
+                        .WithMany("Claims")
+                        .HasForeignKey("ApplicationRoleId");
+
+                    b.HasOne("Aerith.Common.Models.Identity.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1123,6 +1192,10 @@ namespace Aerith.Api.Migrations
             modelBuilder.Entity("Aerith.Common.Models.Identity.ApplicationUserClaim", b =>
                 {
                     b.HasOne("Aerith.Common.Models.Identity.ApplicationUser", null)
+                        .WithMany("Claims")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Aerith.Common.Models.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1131,6 +1204,10 @@ namespace Aerith.Api.Migrations
 
             modelBuilder.Entity("Aerith.Common.Models.Identity.ApplicationUserLogin", b =>
                 {
+                    b.HasOne("Aerith.Common.Models.Identity.ApplicationUser", null)
+                        .WithMany("Logins")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("Aerith.Common.Models.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -1146,15 +1223,27 @@ namespace Aerith.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Aerith.Common.Models.Identity.ApplicationRole", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId1");
+
                     b.HasOne("Aerith.Common.Models.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Aerith.Common.Models.Identity.ApplicationUser", "User")
+                        .WithMany("Roles")
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Aerith.Common.Models.Identity.ApplicationUserToken", b =>
                 {
+                    b.HasOne("Aerith.Common.Models.Identity.ApplicationUser", null)
+                        .WithMany("Tokens")
+                        .HasForeignKey("ApplicationUserId");
+
                     b.HasOne("Aerith.Common.Models.Identity.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")

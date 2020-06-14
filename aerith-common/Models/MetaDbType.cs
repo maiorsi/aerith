@@ -9,7 +9,7 @@ namespace Aerith.Common.Models
     {
         [Key]
         [Column("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [MaxLength(128)]
         [Column("createdBy")]

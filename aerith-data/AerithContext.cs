@@ -1,13 +1,13 @@
-using System;
 using Aerith.Common.Models;
 using Aerith.Common.Models.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Aerith.Data
 {
     public class AerithContext : IdentityDbContext<ApplicationUser,
-        ApplicationRole, Guid, ApplicationUserClaim, ApplicationUserRole,
+        ApplicationRole, long, ApplicationUserClaim, ApplicationUserRole,
         ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
     {
         private const string SQL_DEFAULT_DATE = "GETDATE()";
@@ -15,6 +15,7 @@ namespace Aerith.Data
         public AerithContext(DbContextOptions<AerithContext> options)
         : base(options)
         {
+            
         }
 
         public DbSet<Code> Codes { get; set; }
@@ -28,6 +29,11 @@ namespace Aerith.Data
         public DbSet<Competition> Competitions { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Tip> Tips { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.EnableSensitiveDataLogging();
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -206,6 +212,44 @@ namespace Aerith.Data
 
                 entity.Property(r => r.RoleId).HasColumnName("roleId");
                 entity.Property(r => r.UserId).HasColumnName("userId");
+            });
+
+            // Roles
+            modelBuilder.Entity<ApplicationRole>(e => {
+                e.HasData(new ApplicationRole[]{
+                    new ApplicationRole {
+                        Id = 1L,
+                        Name = "Administrators",
+                        NormalizedName = "ADMINISTRATORS"
+                    },
+                    new ApplicationRole {
+                        Id = 2L,
+                        Name = "Users",
+                        NormalizedName = "USERS"
+                    }
+                });
+            });
+
+            var passwordHasher = new PasswordHasher<ApplicationUser>(); 
+
+            modelBuilder.Entity<ApplicationUser>(e => {
+                e.HasData(new ApplicationUser[] {
+                    new ApplicationUser {
+                        Id = 1L,
+                        UserName = "admin",
+                        NormalizedUserName = "ADMIN",
+                        PasswordHash = passwordHasher.HashPassword(null, "P@ssword01")
+                    }
+                });
+            });
+
+            modelBuilder.Entity<ApplicationUserRole>(e => {
+                e.HasData(new ApplicationUserRole[]{
+                    new ApplicationUserRole {
+                        RoleId = 1L,
+                        UserId = 1L
+                    }
+                });
             });
 
             // Custom Keys

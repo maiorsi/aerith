@@ -11,7 +11,7 @@ namespace Aerith.Common.Models
         // Properties
         [Column("roundId")]
         [Index]
-        public int RoundId { get; set; }
+        public long RoundId { get; set; }
 
         [MaxLength(64)]
         [Column("matchState")]
@@ -27,14 +27,14 @@ namespace Aerith.Common.Models
 
         [Column("homeTeamId")]
         [Index]
-        public int HomeTeamId { get; set; }
+        public long HomeTeamId { get; set; }
 
         [Column("awayTeamId")]
         [Index]
-        public int AwayTeamId { get; set; }
+        public long AwayTeamId { get; set; }
 
         [Column("teamId")]
-        public int? TeamId { get; set; }
+        public long? TeamId { get; set; }
 
         [Column("homeTeamScore")]
         public int HomeTeamScore { get; set; }

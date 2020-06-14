@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Aerith.Data.Helpers
 {
@@ -13,6 +14,17 @@ namespace Aerith.Data.Helpers
             {
                 query = includes.Aggregate(query,
                           (current, include) => current.Include(include));
+            }
+
+            return query;
+        }
+
+        public static IQueryable<T> IncludeThenMultiple<T>(this IQueryable<T> query, params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes) where T : class
+        {
+            if (includes != null)
+            {
+                query = includes.Aggregate(query,
+                          (current, include) => include(current));
             }
 
             return query;

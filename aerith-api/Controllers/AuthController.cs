@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading.Tasks;
@@ -68,10 +69,13 @@ namespace Aerith.Api.Controllers
 
         private ClaimsIdentity GetClaimsIdentity(ApplicationUser applicationUser)
         {
-            return new ClaimsIdentity(new GenericIdentity(applicationUser.UserName), new[]
-            {
-                new Claim(ClaimTypes.Name, applicationUser.UserName)
+            var claims = new List<Claim>();
+
+            applicationUser.Roles.ForEach(role => {
+                claims.Add(new Claim(ClaimTypes.Role, role.Role.Name));
             });
+
+            return new ClaimsIdentity(new GenericIdentity(applicationUser.UserName), claims);
         }
     }
 }

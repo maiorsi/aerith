@@ -8,6 +8,12 @@ namespace Aerith.Common.Models
     [Table("groups")]
     public class Group : MetaDbType
     {
+        public Group()
+        {
+            this.Competitions = new List<Competition>();
+            this.GroupUsers = new List<GroupUser>();
+        }
+
         // Properties
         [MaxLength(128)]
         [Column("name")]
