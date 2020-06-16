@@ -379,14 +379,6 @@ namespace Aerith.Data
                 entity.Property(_ => _.ModifiedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
             });
 
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.Property(_ => _.CreatedBy).HasDefaultValue("AERITH");
-                entity.Property(_ => _.CreatedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
-                entity.Property(_ => _.ModifiedBy).HasDefaultValue("AERITH");
-                entity.Property(_ => _.ModifiedDate).HasDefaultValueSql(SQL_DEFAULT_DATE);
-            });
-
             modelBuilder.Entity<Tip>(entity =>
             {
                 entity.Property(_ => _.CreatedBy).HasDefaultValue("AERITH");

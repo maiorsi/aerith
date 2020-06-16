@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 namespace Aerith.Api.Controllers
 {
     [AllowAnonymous]
-    public class UsersController : BaseController<User>
+    public class TeamsController : BaseController<Team>
     {
-        public UsersController(ILogger<UsersController> logger, IRepository<User> repository)
+        public TeamsController(ILogger<TeamsController> logger, IRepository<Team> repository)
             : base(logger, repository)
         {           
         }

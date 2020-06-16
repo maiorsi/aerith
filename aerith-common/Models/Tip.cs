@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Aerith.Common.Models.Identity;
 
 namespace Aerith.Common.Models
 {
@@ -27,7 +28,7 @@ namespace Aerith.Common.Models
         // Navigation Properties
         [Required]
         [ForeignKey("UserId")]
-        public virtual User User { get; set; }
+        public virtual ApplicationUser User { get; set; }
 
         [Required]
         [ForeignKey("FixtureId")]

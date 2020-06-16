@@ -1,12 +1,16 @@
-<template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-  </div>
+<template lang="pug">
+  div.home
+    img(alt="Vue Logo",src="../assets/logo.png")
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from "vue";
+import { mapGetters } from "vuex";
+
+export default Vue.extend({
   name: "Home",
-  components: {}
-};
+  computed: {
+    ...mapGetters("user", ["profile"])
+  }
+});
 </script>

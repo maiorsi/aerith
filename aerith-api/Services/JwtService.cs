@@ -45,13 +45,8 @@ namespace Aerith.Api.Services
                 {"jti", Guid.NewGuid().ToString("N")}
             };
 
-            Claim guidClaim = claimsIdentity.Claims.FirstOrDefault(_ => _.Type.Equals("guid"));
-
-            if(guidClaim != null)
-            {
-                payload.Add(guidClaim.Type, guidClaim.Value);
-            }
-
+            payload.AddClaims(claimsIdentity.Claims.Where(_ => _.Type.Equals(ClaimTypes.Role)).ToList());
+            
             var jwtHeader = new JwtHeader(_signingCredentials);
 
             var jwt = new JwtSecurityToken(jwtHeader, payload);

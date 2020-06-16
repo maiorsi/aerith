@@ -39,9 +39,6 @@ namespace Aerith.Api.Controllers
             
             var group = await _repository
                     .GetQueryable()
-                    .Include(_ => _.GroupUsers)
-                        .ThenInclude(_ => _.User)
-                        .ThenInclude(_ => _.ApplicationUser)
                     .Include(_ => _.Users)
                     .FirstOrDefaultAsync(_ => _.Id == id);
 

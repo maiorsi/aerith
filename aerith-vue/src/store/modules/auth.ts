@@ -34,9 +34,9 @@ const actions: ActionTree<AuthState, any> = {
       AuthServiceInstance.login(credentials)
         .then((response: AxiosResponse<Token>) => {
           localStorage.setItem("auth-token", response.data.token);
-          commit("authSuccess", response);
+          commit("authSuccess", response.data.token);
           EventBus.$emit("authenticated");
-          dispatch('user/userRequest', null, { root: true });
+          dispatch("user/userRequest", null, { root: true });
           resolve(response);
         })
         .catch((exception: Error) => {
@@ -47,11 +47,11 @@ const actions: ActionTree<AuthState, any> = {
     });
   },
   logout({ dispatch, commit }: { dispatch: any; commit: any }) {
-      return new Promise((resolve) => {
-        commit("authLogout");
-        localStorage.removeItem("auth-token");
-        resolve();
-      });
+    return new Promise(resolve => {
+      commit("authLogout");
+      localStorage.removeItem("auth-token");
+      resolve();
+    });
   }
 };
 

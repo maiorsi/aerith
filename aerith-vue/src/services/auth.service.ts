@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import Axios, { AxiosResponse } from "axios";
 import Credential from "@/models/credentials.interface";
 import Token from "@/models/token.interface";
 
@@ -11,7 +11,7 @@ class AuthService {
   }
 
   public login(credential: Credential): Promise<AxiosResponse<Token>> {
-    return axios.post<Credential, AxiosResponse<Token>>(
+    return Axios.post<Credential, AxiosResponse<Token>>(
       `https://localhost:5001/api/v1/auth/login`,
       credential
     );

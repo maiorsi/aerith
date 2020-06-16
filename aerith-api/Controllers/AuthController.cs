@@ -56,24 +56,27 @@ namespace Aerith.Api.Controllers
 
             if (applicationUser == null)
             {
-                return await Task.FromResult<ClaimsIdentity>(null);
+                return null;
             }
 
             if (await _userManager.CheckPasswordAsync(applicationUser, credentials.Password))
             {
-                return await Task.FromResult(GetClaimsIdentity(applicationUser));
+                return await GetClaimsIdentity(applicationUser);
             }
 
-            return await Task.FromResult<ClaimsIdentity>(null);
+            return null;
         }
 
-        private ClaimsIdentity GetClaimsIdentity(ApplicationUser applicationUser)
+        private async Task<ClaimsIdentity> GetClaimsIdentity(ApplicationUser applicationUser)
         {
             var claims = new List<Claim>();
 
-            applicationUser.Roles.ForEach(role => {
-                claims.Add(new Claim(ClaimTypes.Role, role.Role.Name));
-            });
+            var roles = await _userManager.GetRolesAsync(applicationUser);
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             return new ClaimsIdentity(new GenericIdentity(applicationUser.UserName), claims);
         }

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using Aerith.Common.Models.Identity;
 
 namespace Aerith.Common.Models
 {
@@ -27,6 +28,6 @@ namespace Aerith.Common.Models
         [InverseProperty("Group")]
         public virtual List<GroupUser> GroupUsers { get; set; }
 
-        public virtual List<User> Users { get { return GroupUsers.Select(_ => _.User).ToList(); }}
+        public virtual List<ApplicationUser> Users { get { return GroupUsers.Select(_ => _.User).ToList(); }}
     }
 }

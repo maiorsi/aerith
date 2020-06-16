@@ -41,7 +41,9 @@ namespace Aerith.Api.Migrations
                     twoFactorEnabled = table.Column<bool>(nullable: false),
                     lockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     lockoutEnabled = table.Column<bool>(nullable: false),
-                    accessFailedCount = table.Column<int>(nullable: false)
+                    accessFailedCount = table.Column<int>(nullable: false),
+                    name = table.Column<string>(maxLength: 256, nullable: true),
+                    nickname = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -301,7 +303,7 @@ namespace Aerith.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "users",
+                name: "groupUsers",
                 columns: table => new
                 {
                     id = table.Column<long>(nullable: false)
@@ -311,22 +313,21 @@ namespace Aerith.Api.Migrations
                     modifiedBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
                     modifiedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
                     isInactive = table.Column<bool>(nullable: false),
-                    identityId = table.Column<long>(nullable: false),
-                    name = table.Column<string>(maxLength: 256, nullable: true),
-                    groupId = table.Column<long>(nullable: true)
+                    userId = table.Column<long>(nullable: false),
+                    groupId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_users", x => x.id);
+                    table.PrimaryKey("PK_groupUsers", x => x.id);
                     table.ForeignKey(
-                        name: "FK_users_groups_groupId",
+                        name: "FK_groupUsers_groups_groupId",
                         column: x => x.groupId,
                         principalTable: "groups",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_users_applicationUsers_identityId",
-                        column: x => x.identityId,
+                        name: "FK_groupUsers_applicationUsers_userId",
+                        column: x => x.userId,
                         principalTable: "applicationUsers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -384,37 +385,6 @@ namespace Aerith.Api.Migrations
                         name: "FK_tournaments_seasons_seasonId",
                         column: x => x.seasonId,
                         principalTable: "seasons",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "groupUsers",
-                columns: table => new
-                {
-                    id = table.Column<long>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    createdBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
-                    createdDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
-                    modifiedBy = table.Column<string>(maxLength: 128, nullable: true, defaultValue: "AERITH"),
-                    modifiedDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()"),
-                    isInactive = table.Column<bool>(nullable: false),
-                    userId = table.Column<long>(nullable: false),
-                    groupId = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_groupUsers", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_groupUsers_groups_groupId",
-                        column: x => x.groupId,
-                        principalTable: "groups",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_groupUsers_users_userId",
-                        column: x => x.userId,
-                        principalTable: "users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -564,9 +534,9 @@ namespace Aerith.Api.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tips_users_userId",
+                        name: "FK_tips_applicationUsers_userId",
                         column: x => x.userId,
-                        principalTable: "users",
+                        principalTable: "applicationUsers",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -576,19 +546,19 @@ namespace Aerith.Api.Migrations
                 columns: new[] { "id", "concurrencyStamp", "name", "normalisedName" },
                 values: new object[,]
                 {
-                    { 1L, "dfde25b6-1ae7-4b6d-9c3b-49a137130137", "Administrators", "ADMINISTRATORS" },
-                    { 2L, "a3b2c7e6-c86a-451f-8060-425717e6be70", "Users", "USERS" }
+                    { 1L, "e5aecbb2-ec16-4163-a69f-321ac1962102", "Administrators", "ADMINISTRATORS" },
+                    { 2L, "a282e3f0-2e32-4342-bd84-7149066e4062", "Users", "USERS" }
                 });
 
             migrationBuilder.InsertData(
                 table: "applicationUsers",
-                columns: new[] { "id", "accessFailedCount", "concurrencyStamp", "email", "emailConfirmed", "lockoutEnabled", "lockoutEnd", "normalisedEmail", "normalisedUsername", "passwordHash", "phoneNumber", "phoneNumberConfirmed", "securityStamp", "twoFactorEnabled", "username" },
-                values: new object[] { 1L, 0, "6ab64169-26f6-456c-9b24-cc05c1cf1b4a", null, false, false, null, null, "ADMIN", "AQAAAAEAACcQAAAAEB2PdvJYyIJBrL5CrstJcZRU92tMiz5HBW1MP2kFejCEpPEzFIKofLIABoE+xHxGew==", null, false, null, false, "admin" });
+                columns: new[] { "id", "accessFailedCount", "concurrencyStamp", "email", "emailConfirmed", "lockoutEnabled", "lockoutEnd", "name", "nickname", "normalisedEmail", "normalisedUsername", "passwordHash", "phoneNumber", "phoneNumberConfirmed", "securityStamp", "twoFactorEnabled", "username" },
+                values: new object[] { 1L, 0, "7e7a56db-96f2-4ecf-8d62-132972069bb5", null, false, false, null, null, null, null, "ADMIN", "AQAAAAEAACcQAAAAEFHZwM6gT94mEnCEh6oarI6z/2W5sIuO+lQGC5I4m7+zDNOyI/nPQ4uPGPceJveaiw==", null, false, null, false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "codes",
                 columns: new[] { "id", "createdDate", "isInactive", "name" },
-                values: new object[] { 1L, new DateTime(2020, 6, 12, 21, 16, 23, 50, DateTimeKind.Local).AddTicks(2387), false, "Rugby League" });
+                values: new object[] { 1L, new DateTime(2020, 6, 14, 21, 17, 31, 277, DateTimeKind.Local).AddTicks(8327), false, "Rugby League" });
 
             migrationBuilder.InsertData(
                 table: "userRoles",
@@ -755,17 +725,6 @@ namespace Aerith.Api.Migrations
                 column: "UserId1");
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_groupId",
-                table: "users",
-                column: "groupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_users_identityId",
-                table: "users",
-                column: "identityId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_userTokens_ApplicationUserId",
                 table: "userTokens",
                 column: "ApplicationUserId");
@@ -804,22 +763,19 @@ namespace Aerith.Api.Migrations
                 name: "fixtures");
 
             migrationBuilder.DropTable(
-                name: "users");
+                name: "applicationRoles");
 
             migrationBuilder.DropTable(
-                name: "applicationRoles");
+                name: "applicationUsers");
+
+            migrationBuilder.DropTable(
+                name: "groups");
 
             migrationBuilder.DropTable(
                 name: "teams");
 
             migrationBuilder.DropTable(
                 name: "rounds");
-
-            migrationBuilder.DropTable(
-                name: "groups");
-
-            migrationBuilder.DropTable(
-                name: "applicationUsers");
 
             migrationBuilder.DropTable(
                 name: "tournaments");

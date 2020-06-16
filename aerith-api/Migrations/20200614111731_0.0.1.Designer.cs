@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Aerith.Api.Migrations
 {
     [DbContext(typeof(AerithContext))]
-    [Migration("20200612111623_0.0.1")]
+    [Migration("20200614111731_0.0.1")]
     partial class _001
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -125,9 +125,9 @@ namespace Aerith.Api.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedDate = new DateTime(2020, 6, 12, 21, 16, 23, 50, DateTimeKind.Local).AddTicks(2387),
+                            CreatedDate = new DateTime(2020, 6, 14, 21, 17, 31, 277, DateTimeKind.Local).AddTicks(8327),
                             IsInactive = false,
-                            ModifiedDate = new DateTime(2020, 6, 12, 21, 16, 23, 54, DateTimeKind.Local).AddTicks(809),
+                            ModifiedDate = new DateTime(2020, 6, 14, 21, 17, 31, 281, DateTimeKind.Local).AddTicks(9950),
                             Name = "Rugby League"
                         });
                 });
@@ -424,14 +424,14 @@ namespace Aerith.Api.Migrations
                         new
                         {
                             Id = 1L,
-                            ConcurrencyStamp = "dfde25b6-1ae7-4b6d-9c3b-49a137130137",
+                            ConcurrencyStamp = "e5aecbb2-ec16-4163-a69f-321ac1962102",
                             Name = "Administrators",
                             NormalizedName = "ADMINISTRATORS"
                         },
                         new
                         {
                             Id = 2L,
-                            ConcurrencyStamp = "a3b2c7e6-c86a-451f-8060-425717e6be70",
+                            ConcurrencyStamp = "a282e3f0-2e32-4342-bd84-7149066e4062",
                             Name = "Users",
                             NormalizedName = "USERS"
                         });
@@ -503,6 +503,16 @@ namespace Aerith.Api.Migrations
                         .HasColumnName("lockoutEnd")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("Name")
+                        .HasColumnName("name")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("Nickname")
+                        .HasColumnName("nickname")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
                     b.Property<string>("NormalizedEmail")
                         .HasColumnName("normalisedEmail")
                         .HasColumnType("nvarchar(256)")
@@ -555,11 +565,11 @@ namespace Aerith.Api.Migrations
                         {
                             Id = 1L,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6ab64169-26f6-456c-9b24-cc05c1cf1b4a",
+                            ConcurrencyStamp = "7e7a56db-96f2-4ecf-8d62-132972069bb5",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEB2PdvJYyIJBrL5CrstJcZRU92tMiz5HBW1MP2kFejCEpPEzFIKofLIABoE+xHxGew==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFHZwM6gT94mEnCEh6oarI6z/2W5sIuO+lQGC5I4m7+zDNOyI/nPQ4uPGPceJveaiw==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "admin"
@@ -1053,67 +1063,6 @@ namespace Aerith.Api.Migrations
                     b.ToTable("tournaments");
                 });
 
-            modelBuilder.Entity("Aerith.Common.Models.User", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id")
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CreatedBy")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("createdBy")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128)
-                        .HasDefaultValue("AERITH");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("createdDate")
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<long?>("GroupId")
-                        .HasColumnName("groupId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("IdentityId")
-                        .HasColumnName("identityId")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool>("IsInactive")
-                        .HasColumnName("isInactive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("modifiedBy")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128)
-                        .HasDefaultValue("AERITH");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnName("modifiedDate")
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<string>("Name")
-                        .HasColumnName("name")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("IdentityId")
-                        .IsUnique();
-
-                    b.ToTable("users");
-                });
-
             modelBuilder.Entity("Aerith.Common.Models.Bye", b =>
                 {
                     b.HasOne("Aerith.Common.Models.Team", "Team")
@@ -1171,7 +1120,7 @@ namespace Aerith.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Aerith.Common.Models.User", "User")
+                    b.HasOne("Aerith.Common.Models.Identity.ApplicationUser", "User")
                         .WithMany("GroupUsers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1291,7 +1240,7 @@ namespace Aerith.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Aerith.Common.Models.User", "User")
+                    b.HasOne("Aerith.Common.Models.Identity.ApplicationUser", "User")
                         .WithMany("Tips")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1309,19 +1258,6 @@ namespace Aerith.Api.Migrations
                     b.HasOne("Aerith.Common.Models.Season", "Season")
                         .WithMany("Tournaments")
                         .HasForeignKey("SeasonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Aerith.Common.Models.User", b =>
-                {
-                    b.HasOne("Aerith.Common.Models.Group", null)
-                        .WithMany("Users")
-                        .HasForeignKey("GroupId");
-
-                    b.HasOne("Aerith.Common.Models.Identity.ApplicationUser", "ApplicationUser")
-                        .WithOne("User")
-                        .HasForeignKey("Aerith.Common.Models.User", "IdentityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
