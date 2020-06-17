@@ -30,6 +30,13 @@ namespace Aerith.Common.Models.Identity
         [Column("nickname")]
         public string Nickname { get; set; }
 
+        [MaxLength(256)]
+        [Column("refreshToken")]
+        public string RefreshToken { get; set; }
+
+        [Column("refreshTokenExpiry")]
+        public DateTime? RefreshTokenExpiry { get; set; }
+
         [InverseProperty("User")]
         public virtual List<GroupUser> GroupUsers { get; set; }
 

@@ -8,6 +8,17 @@ namespace Aerith.Scraper.Models
 
         public string GameTime { get; set; }
 
-        public int GameMinutes { get { return int.Parse(GameTime.Substring(0,2)); } }
+        public int GameMinutes { 
+            get { 
+                return ParseGameMinutes();
+            } 
+        }
+
+        private int ParseGameMinutes()
+        {
+            int.TryParse(GameTime.Substring(0, GameTime.IndexOf(":")), out int gameMinutes);
+
+            return gameMinutes;
+        }
     }
 }

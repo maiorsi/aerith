@@ -43,7 +43,9 @@ namespace Aerith.Api.Migrations
                     lockoutEnabled = table.Column<bool>(nullable: false),
                     accessFailedCount = table.Column<int>(nullable: false),
                     name = table.Column<string>(maxLength: 256, nullable: true),
-                    nickname = table.Column<string>(maxLength: 256, nullable: true)
+                    nickname = table.Column<string>(maxLength: 256, nullable: true),
+                    refreshToken = table.Column<string>(maxLength: 256, nullable: true),
+                    refreshTokenExpiry = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -546,19 +548,19 @@ namespace Aerith.Api.Migrations
                 columns: new[] { "id", "concurrencyStamp", "name", "normalisedName" },
                 values: new object[,]
                 {
-                    { 1L, "e5aecbb2-ec16-4163-a69f-321ac1962102", "Administrators", "ADMINISTRATORS" },
-                    { 2L, "a282e3f0-2e32-4342-bd84-7149066e4062", "Users", "USERS" }
+                    { 1L, "48f57a16-56d3-4b6b-bd11-adeb67eb9e5d", "Administrators", "ADMINISTRATORS" },
+                    { 2L, "c0d3a885-cb5f-4b95-9b61-ba4bd9d58d82", "Users", "USERS" }
                 });
 
             migrationBuilder.InsertData(
                 table: "applicationUsers",
-                columns: new[] { "id", "accessFailedCount", "concurrencyStamp", "email", "emailConfirmed", "lockoutEnabled", "lockoutEnd", "name", "nickname", "normalisedEmail", "normalisedUsername", "passwordHash", "phoneNumber", "phoneNumberConfirmed", "securityStamp", "twoFactorEnabled", "username" },
-                values: new object[] { 1L, 0, "7e7a56db-96f2-4ecf-8d62-132972069bb5", null, false, false, null, null, null, null, "ADMIN", "AQAAAAEAACcQAAAAEFHZwM6gT94mEnCEh6oarI6z/2W5sIuO+lQGC5I4m7+zDNOyI/nPQ4uPGPceJveaiw==", null, false, null, false, "admin" });
+                columns: new[] { "id", "accessFailedCount", "concurrencyStamp", "email", "emailConfirmed", "lockoutEnabled", "lockoutEnd", "name", "nickname", "normalisedEmail", "normalisedUsername", "passwordHash", "phoneNumber", "phoneNumberConfirmed", "refreshToken", "refreshTokenExpiry", "securityStamp", "twoFactorEnabled", "username" },
+                values: new object[] { 1L, 0, "0f161db5-820a-4c42-a215-5884c389f97c", null, false, false, null, null, null, null, "ADMIN", "AQAAAAEAACcQAAAAEDRbgxaGR8BCnvi2eLpLNQxfRSSaO46onNPi1iybfD0m+Cbs9VM8tw6A5K9NJffdOw==", null, false, null, null, null, false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "codes",
                 columns: new[] { "id", "createdDate", "isInactive", "name" },
-                values: new object[] { 1L, new DateTime(2020, 6, 14, 21, 17, 31, 277, DateTimeKind.Local).AddTicks(8327), false, "Rugby League" });
+                values: new object[] { 1L, new DateTime(2020, 6, 17, 20, 39, 38, 86, DateTimeKind.Local).AddTicks(8080), false, "Rugby League" });
 
             migrationBuilder.InsertData(
                 table: "userRoles",

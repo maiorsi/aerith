@@ -123,9 +123,9 @@ namespace Aerith.Api.Migrations
                         new
                         {
                             Id = 1L,
-                            CreatedDate = new DateTime(2020, 6, 14, 21, 17, 31, 277, DateTimeKind.Local).AddTicks(8327),
+                            CreatedDate = new DateTime(2020, 6, 17, 20, 39, 38, 86, DateTimeKind.Local).AddTicks(8080),
                             IsInactive = false,
-                            ModifiedDate = new DateTime(2020, 6, 14, 21, 17, 31, 281, DateTimeKind.Local).AddTicks(9950),
+                            ModifiedDate = new DateTime(2020, 6, 17, 20, 39, 38, 91, DateTimeKind.Local).AddTicks(7780),
                             Name = "Rugby League"
                         });
                 });
@@ -422,14 +422,14 @@ namespace Aerith.Api.Migrations
                         new
                         {
                             Id = 1L,
-                            ConcurrencyStamp = "e5aecbb2-ec16-4163-a69f-321ac1962102",
+                            ConcurrencyStamp = "48f57a16-56d3-4b6b-bd11-adeb67eb9e5d",
                             Name = "Administrators",
                             NormalizedName = "ADMINISTRATORS"
                         },
                         new
                         {
                             Id = 2L,
-                            ConcurrencyStamp = "a282e3f0-2e32-4342-bd84-7149066e4062",
+                            ConcurrencyStamp = "c0d3a885-cb5f-4b95-9b61-ba4bd9d58d82",
                             Name = "Users",
                             NormalizedName = "USERS"
                         });
@@ -533,6 +533,15 @@ namespace Aerith.Api.Migrations
                         .HasColumnName("phoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RefreshToken")
+                        .HasColumnName("refreshToken")
+                        .HasColumnType("nvarchar(256)")
+                        .HasMaxLength(256);
+
+                    b.Property<DateTime?>("RefreshTokenExpiry")
+                        .HasColumnName("refreshTokenExpiry")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnName("securityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -563,11 +572,11 @@ namespace Aerith.Api.Migrations
                         {
                             Id = 1L,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7e7a56db-96f2-4ecf-8d62-132972069bb5",
+                            ConcurrencyStamp = "0f161db5-820a-4c42-a215-5884c389f97c",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFHZwM6gT94mEnCEh6oarI6z/2W5sIuO+lQGC5I4m7+zDNOyI/nPQ4uPGPceJveaiw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDRbgxaGR8BCnvi2eLpLNQxfRSSaO46onNPi1iybfD0m+Cbs9VM8tw6A5K9NJffdOw==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false,
                             UserName = "admin"

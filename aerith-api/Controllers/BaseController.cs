@@ -32,11 +32,11 @@ namespace Aerith.Api.Controllers
         [HttpGet]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<IEnumerable<T>>> Get_1_0(ApiVersion version, [FromQuery] bool eager = false)
+        public async Task<ActionResult<IEnumerable<T>>> Get_1_0(ApiVersion version)
         {
             _logger.LogTrace("GET api/v{}.{}/[controller]", version.MajorVersion, version.MinorVersion);
 
-            return Ok(await _repository.GetAllAsync(eager));
+            return Ok(await _repository.GetAllAsync());
         }
 
         /// <summary>
@@ -48,11 +48,11 @@ namespace Aerith.Api.Controllers
         [HttpGet("{id:long}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<T>> GetOne_1_0([FromRoute] long id,  ApiVersion version, [FromQuery] bool eager = false)
+        public async Task<ActionResult<T>> GetOne_1_0([FromRoute] long id,  ApiVersion version)
         {
             _logger.LogTrace("GET api/v{}.{}/[controller]/{}", version.MajorVersion, version.MinorVersion, id);
             
-            return await _repository.GetAsync(id, eager);
+            return await _repository.GetAsync(id);
         }
 
         /// <summary>

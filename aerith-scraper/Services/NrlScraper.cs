@@ -69,7 +69,7 @@ namespace Aerith.Scraper.Services
 
             var parallelOptions = new ParallelOptions
             {
-                MaxDegreeOfParallelism = 2
+                MaxDegreeOfParallelism = 1
             };
 
             Parallel.For(START_SEASON, DateTime.Now.Year + 1, parallelOptions, i =>
@@ -262,12 +262,15 @@ namespace Aerith.Scraper.Services
         {
             var url = $"https://www.nrl.com/client/dist/logos/{team.ToLower()}-badge.svg";
 
+            /*
             using(var web = new WebClient())
             {
                 byte[] svg = web.DownloadData(new Uri(url));
 
                 return svg;
             }
+            */
+            return new byte[0];
         }
 
         private async Task SyncDatabase(Dictionary<string, NrlScrapeResult> scrapeResults)
@@ -351,7 +354,7 @@ namespace Aerith.Scraper.Services
 
                             if (awayTeam == null)
                             {
-                                _logger.LogError("Could not find team with value {0}", fixture.AwayTeam.TeamId);
+                                _logger.LogError("Could not find team with value {}", fixture.AwayTeam.TeamId);
                                 throw new Exception("Could not find team!");
                             }
 
@@ -363,7 +366,7 @@ namespace Aerith.Scraper.Services
 
                             if (homeTeam == null)
                             {
-                                _logger.LogError("Could not find team with value {0}", fixture.AwayTeam.TeamId);
+                                _logger.LogError("Could not find team with value {}", fixture.AwayTeam.TeamId);
                                 throw new Exception("Could not find team!");
                             }
 
@@ -386,11 +389,11 @@ namespace Aerith.Scraper.Services
                                     Venue = fixture.Venue
                                 });
 
-                                _logger.LogInformation("Added fixture:  Round: {0}, Away Team: {1}, Home Team: {2}", round, awayTeam.Name, homeTeam.Name);
+                                _logger.LogInformation("Added fixture:  Round: {}, Away Team: {}, Home Team: {}", round, awayTeam.Name, homeTeam.Name);
                             }
                             else
                             {
-                                _logger.LogInformation("Found fixture: Round: {0}, Away Team: {1}, Home Team: {2}", round, awayTeam.Name, homeTeam.Name);
+                                _logger.LogInformation("Found fixture: Round: {}, Away Team: {}, Home Team: {}", round, awayTeam.Name, homeTeam.Name);
                             }
                         }
                     }

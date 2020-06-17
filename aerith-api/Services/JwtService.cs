@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Aerith.Api.Interfaces;
 using Aerith.Api.Settings;
-using Aerith.Common.Models.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
 
 namespace Aerith.Api.Services
 {
@@ -54,6 +54,18 @@ namespace Aerith.Api.Services
             var jwtHandler = new JwtSecurityTokenHandler();
            
             return Task.FromResult(jwtHandler.WriteToken(jwt));
+        }
+
+        public async Task<string> GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+
+            using(var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+
+                return await Task.FromResult(Convert.ToBase64String(randomNumber));
+            }
         }
     }
 }
