@@ -1,8 +1,4 @@
 import { GetterTree, ActionTree, MutationTree } from "vuex";
-import Credentials from "@/models/credentials.interface";
-import { AuthServiceInstance } from "@/services/auth.service";
-import { EventBus } from "@/event-bus";
-import Token from "@/models/token.interface";
 import { AxiosResponse } from "axios";
 import Profile from "@/models/profile.interface";
 import { ProfileServiceInstance } from "@/services/profile.service";
@@ -35,9 +31,9 @@ const actions: ActionTree<UserState, any> = {
       .then((response: AxiosResponse<Profile>) => {
         commit("userSuccess", response.data as Profile);
       })
-      .catch((exception: Error) => {
+      .catch(() => {
         commit("userError");
-        dispatch("auth/authLogout", null, { root: true });
+        dispatch("auth/logout", null, { root: true });
       });
   }
 };
@@ -50,7 +46,7 @@ const mutations: MutationTree<UserState> = {
     userState.status = "Successfully fetched user profile.";
     userState.profile = profile;
   },
-  userError: (userState: any) => {
+  userError: (userState: UserState) => {
     userState.status = "User Profile Fetch Failed!";
   }
 };

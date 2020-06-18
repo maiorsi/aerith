@@ -2,58 +2,53 @@
   <v-app id="inspire">
     <v-navigation-drawer v-model="drawer" v-if="isAuthenticated" app clipped>
       <v-list>
-      <v-list-item>
-        <v-list-item-icon>
-          <v-icon>mdi-home</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>Home</v-list-item-title>
-      </v-list-item>
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Home</v-list-item-title>
+        </v-list-item>
 
-      <v-list-group
-        prepend-icon="mdi-home"
-        value="true"
-      >
-        <template v-slot:activator>
-          <v-list-item-title>Users</v-list-item-title>
-        </template>
-
-        <v-list-group
-          no-action
-          sub-group
-          value="true"
-        >
+        <v-list-group prepend-icon="mdi-home" value="true">
           <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title>Admin</v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title>Administration</v-list-item-title>
           </template>
-
           <v-list-item>
             <v-list-item-title>Test</v-list-item-title>
             <v-list-item-icon>
               <v-icon>mdi-view-dashboard</v-icon>
             </v-list-item-icon>
           </v-list-item>
-        </v-list-group>
+          <v-list-group no-action sub-group value="true">
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Admin</v-list-item-title>
+              </v-list-item-content>
+            </template>
 
-        <v-list-group
-          sub-group
-          no-action
-        >
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title>Actions</v-list-item-title>
-            </v-list-item-content>
-          </template>
-          <v-list-item>
-            <v-list-item-title>Test 2</v-list-item-title>
-            <v-list-item-action>
-              <v-icon>mdi-view-dashboard</v-icon>
-            </v-list-item-action>
-          </v-list-item>
+            <v-list-item>
+              <v-list-item-title>Test</v-list-item-title>
+              <v-list-item-icon>
+                <v-icon>mdi-view-dashboard</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-group>
+
+          <v-list-group sub-group no-action>
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title>Actions</v-list-item-title>
+              </v-list-item-content>
+            </template>
+            <v-list-item>
+              <v-list-item-title>Test 2</v-list-item-title>
+              <v-list-item-action>
+                <v-icon>mdi-view-dashboard</v-icon>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list-group>
         </v-list-group>
-      </v-list-group>
-    </v-list>
+      </v-list>
       <v-list dense v-if="false">
         <v-list-item link to="/">
           <v-list-item-action>
@@ -67,7 +62,11 @@
           <template v-slot:activator>
             <v-list-item-title>Administration</v-list-item-title>
           </template>
-          <v-list-item link to="/admin/teams" v-if="isAuthenticated && hasRole('Administrators')">
+          <v-list-item
+            link
+            to="/admin/teams"
+            v-if="isAuthenticated && hasRole('Administrators')"
+          >
             <v-list-item-action>
               <v-icon>mdi-view-dashboard</v-icon>
             </v-list-item-action>
@@ -111,7 +110,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Vue } from "vue-property-decorator";
 import { EventBus } from "./event-bus";
 import { mapGetters } from "vuex";
 
@@ -124,10 +123,17 @@ export default Vue.extend({
     this.$vuetify.theme.dark = true;
 
     EventBus.$on("authenticated", (payLoad: any) => {
-      console.log("'authenticated' message received...");
+      console.log({
+        message: "'authenticated' message received...",
+        payLoad: payLoad
+      });
     });
 
-    if(this.$store.getters["auth/isAuthenticated"]) {
+    const isAuthenticated = this.$store.getters[
+      "auth/isAuthenticated"
+    ] as boolean;
+
+    if (isAuthenticated) {
       // Already authenticated. We need to now fetch profile
       this.$store.dispatch("user/userRequest", null, { root: true });
     }

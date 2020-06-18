@@ -40,13 +40,13 @@ import { mapGetters } from "vuex";
 export default Vue.extend({
   computed: {
     ...mapGetters("auth", ["isAuthenticated"]),
-    ...mapGetters("auth", ["authLoading"]),
+    ...mapGetters("auth", ["authLoading"])
   },
   data: () => ({
     credentials: {
       username: "",
-      password: "",
-    } as Credentials,
+      password: ""
+    } as Credentials
   }),
   methods: {
     login() {
@@ -62,7 +62,7 @@ export default Vue.extend({
     },
     googleLogin() {
       console.log("Google Login!");
-    },
+    }
   },
   name: "Login"
 });

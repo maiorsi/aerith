@@ -16,6 +16,13 @@ class AuthService {
       credential
     );
   }
+
+  public refresh(token: Token): Promise<AxiosResponse<Token>> {
+    return Axios.post<Token, AxiosResponse<Token>>(
+      `https://localhost:5001/api/v1/auth/refresh`,
+      token
+    );
+  }
 }
 
 // export a singleton instance in the global namespace

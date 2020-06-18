@@ -1,4 +1,5 @@
 import Axios, { AxiosResponse } from "axios";
+import Team from "@/models/team.interface";
 
 class TeamService {
   private static instance: TeamService;
@@ -8,7 +9,7 @@ class TeamService {
     return this.instance || (this.instance = new this());
   }
 
-  public get(): Promise<AxiosResponse<any>> {
+  public get(): Promise<AxiosResponse<Team>> {
     return Axios.get("https://localhost:5001/api/v1/teams");
   }
 }

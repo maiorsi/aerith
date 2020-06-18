@@ -21,17 +21,17 @@ const routes: Array<RouteConfig> = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/admin',
+    path: "/admin",
     component: AdminRoot,
     meta: { requiresAuth: true },
     children: [
       {
-        path: 'teams',
+        path: "teams",
         component: Teams,
         // a meta field
-        meta: { requiresAuth: true },
-      },
-    ],
+        meta: { requiresAuth: true }
+      }
+    ]
   },
   {
     path: "/login",

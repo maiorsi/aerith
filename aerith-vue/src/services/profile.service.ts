@@ -1,4 +1,5 @@
 import Axios, { AxiosResponse } from "axios";
+import Profile from "@/models/profile.interface";
 
 class ProfileService {
   private static instance: ProfileService;
@@ -8,7 +9,7 @@ class ProfileService {
     return this.instance || (this.instance = new this());
   }
 
-  public get(): Promise<AxiosResponse<any>> {
+  public get(): Promise<AxiosResponse<Profile>> {
     return Axios.get("https://localhost:5001/api/v1/account/profile");
   }
 }

@@ -7,12 +7,14 @@ import { AxiosResponse } from "axios";
 
 export interface AuthState {
   token: string;
+  refreshToken: string;
   status: string;
   loading: boolean;
 }
 
 const state: AuthState = {
   token: localStorage.getItem("auth-token") || "",
+  refreshToken: localStorage.getItem("refresh-token") || "",
   status: "",
   loading: false
 };
@@ -21,6 +23,7 @@ const getters: GetterTree<AuthState, any> = {
   isAuthenticated: (state: AuthState) => !!state.token,
   authStatus: (state: AuthState) => state.status,
   authToken: (state: AuthState) => state.token,
+  authRefreshToken: (state: AuthState) => state.token,
   authLoading: (state: AuthState) => state.loading
 };
 
@@ -34,7 +37,11 @@ const actions: ActionTree<AuthState, any> = {
       AuthServiceInstance.login(credentials)
         .then((response: AxiosResponse<Token>) => {
           localStorage.setItem("auth-token", response.data.token);
-          commit("authSuccess", response.data.token);
+          localStorage.setItem("refresh-token", response.data.refreshToken);
+          commit("authSuccess", {
+            token: response.data.token,
+            refreshToken: response.data.refreshToken
+          });
           EventBus.$emit("authenticated");
           dispatch("user/userRequest", null, { root: true });
           resolve(response);
@@ -42,6 +49,7 @@ const actions: ActionTree<AuthState, any> = {
         .catch((exception: Error) => {
           commit("authError", exception);
           localStorage.removeItem("auth-token");
+          localStorage.removeItem("refresh-token");
           reject(exception);
         });
     });
@@ -50,7 +58,36 @@ const actions: ActionTree<AuthState, any> = {
     return new Promise(resolve => {
       commit("authLogout");
       localStorage.removeItem("auth-token");
+      localStorage.removeItem("refresh-token");
       resolve();
+    });
+  },
+  refresh({ dispatch, commit }: { dispatch: any; commit: any }) {
+    return new Promise((resolve, reject) => {
+      const token: Token = {
+        token: localStorage.getItem("auth-token") || "",
+        refreshToken: localStorage.getItem("refresh-token") || ""
+      };
+
+      commit("authRequest");
+      AuthServiceInstance.refresh(token)
+        .then((response: AxiosResponse<Token>) => {
+          localStorage.setItem("auth-token", response.data.token);
+          localStorage.setItem("refresh-token", response.data.refreshToken);
+          commit("authSuccess", {
+            token: response.data.token,
+            refreshToken: response.data.refreshToken
+          });
+          EventBus.$emit("authenticated");
+          dispatch("user/userRequest", null, { root: true });
+          resolve(response);
+        })
+        .catch((exception: Error) => {
+          commit("authError", exception);
+          localStorage.removeItem("auth-token");
+          localStorage.removeItem("refresh-token");
+          reject(exception);
+        });
     });
   }
 };
@@ -60,9 +97,13 @@ const mutations: MutationTree<AuthState> = {
     authState.status = "Authenticating...";
     authState.loading = true;
   },
-  authSuccess: (authState: AuthState, authToken: string) => {
+  authSuccess: (
+    authState: AuthState,
+    authToken: { token: string; refreshToken: string }
+  ) => {
     authState.status = "Successfully authenticated.";
-    authState.token = authToken;
+    authState.token = authToken.token;
+    authState.refreshToken = authToken.refreshToken;
     authState.loading = false;
   },
   authError: (authState: AuthState) => {

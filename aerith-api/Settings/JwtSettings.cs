@@ -6,6 +6,7 @@ namespace Aerith.Api.Settings
         public double ClockSkewMinutes { get; set; }
         public string HmacSecretKey { get; set; }
         public string Issuer { get; set; }
+        public int RefreshTokenExpiryMinutes { get; set; }
         public bool RequireSignedTokens { get; set; }
         public bool RequireExpirationTime { get; set; }
         public int TokenExpiryMinutes { get; set; }
