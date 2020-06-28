@@ -1,11 +1,11 @@
 <template lang="pug">
   <v-container class="fill-height" fluid>
-    <v-row justify="center" no-gutters v-show="authLoading">
+    <v-row justify="center" no-gutters v-if="authLoading">
       <v-col md="auto">
         <v-progress-circular :size="100" color="primary" indeterminate></v-progress-circular>
       </v-col>
     </v-row>
-    <v-row justify="center" no-gutters v-show="!authLoading">
+    <v-row justify="center" no-gutters v-if="!authLoading">
       <v-col md="auto">      
         <v-card id="login-card" class="elevation-12">
           <v-toolbar color="primary" dark flat>
@@ -51,13 +51,10 @@ export default Vue.extend({
   methods: {
     login() {
       this.$store.dispatch("auth/authenticate", this.credentials).then(() => {
-        if (this.$route.query.redirect) {
-          const redirect: string = this.$route.query.redirect[0] || "/home";
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirect = urlParams.get("redirect") || "/home";
 
-          this.$router.push(redirect);
-        } else {
-          this.$router.push("/home");
-        }
+        this.$router.push(redirect);
       });
     },
     googleLogin() {

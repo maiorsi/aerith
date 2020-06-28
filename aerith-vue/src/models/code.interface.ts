@@ -1,6 +1,5 @@
-export default interface Team {
+export default interface Code {
   id: number;
   name: string;
-  value: number;
   createdDate: Date;
 }

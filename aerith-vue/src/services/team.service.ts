@@ -9,8 +9,12 @@ class TeamService {
     return this.instance || (this.instance = new this());
   }
 
-  public get(): Promise<AxiosResponse<Team>> {
+  public get(): Promise<AxiosResponse<Team[]>> {
     return Axios.get("https://localhost:5001/api/v1/teams");
+  }
+
+  public patch(id: number, patch: any): Promise<AxiosResponse<Team>> {
+    return Axios.patch(`https://localhost:5001/api/v1/teams/${id}`, patch);
   }
 }
 

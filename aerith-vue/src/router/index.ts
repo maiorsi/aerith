@@ -8,6 +8,7 @@ import VueRouter, {
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import AdminRoot from "../views/admin/AdminRoot.vue";
+import Codes from "../views/admin/Codes.vue";
 import Teams from "../views/admin/Teams.vue";
 import store from "@/store";
 
@@ -25,6 +26,12 @@ const routes: Array<RouteConfig> = [
     component: AdminRoot,
     meta: { requiresAuth: true },
     children: [
+      {
+        path: "codes",
+        component: Codes,
+        // a meta field
+        meta: { requiresAuth: true }
+      },
       {
         path: "teams",
         component: Teams,
