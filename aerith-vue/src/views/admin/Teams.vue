@@ -32,13 +32,13 @@
                   <v-card-text>
                     <v-container>
                       <v-row>
-                        <v-col cols="12" sm="6" md="4">
+                        <v-col>
                           <v-text-field
                             v-model="editedItem.value"
                             label="Team value"
                           ></v-text-field>
                         </v-col>
-                        <v-col cols="12" sm="6" md="4">
+                        <v-col>
                            <v-text-field
                             v-model="editedItem.name"
                             label="Team name"
@@ -50,11 +50,14 @@
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="blue darken-1" text @click="close">Cancel</v-btn>
-                    <v-btn color="blue darken-1" text @click="save">Save</v-btn>
+                    <v-btn color="blue darken-1" :loading="dialogLoading" text @click="save">Save</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
             </v-toolbar>
+          </template>
+          <template v-slot:item.createdDate="{ item }">
+            <span>{{moment(item.createdDate).format()}}</span>
           </template>
           <template v-slot:item.actions="{ item }">
             <v-icon small class="mr-2" @click="editItem(item)">
@@ -79,14 +82,17 @@
 <script lang="ts">
 import Vue from "vue";
 import Team from "../../models/team.interface";
+import Patch from "../../models/meta/patch.interface";
 import { TeamServiceInstance } from "../../services/team.service";
 import { AxiosResponse } from "axios";
+import _ from "lodash";
+import moment from "moment";
 
 export default Vue.extend({
   computed: {
     formTitle: function(): string {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
-    }
+    },
   },
   data: function() {
     return {
@@ -94,9 +100,11 @@ export default Vue.extend({
         name: ""
       } as Team,
       dialog: false,
+      dialogLoading: false,
       editedIndex: -1,
       editedItem: {
-        name: ""
+        name: "",
+        value: 0
       } as Team,
       headers: [
         {
@@ -116,39 +124,65 @@ export default Vue.extend({
   },
   name: "Teams",
   methods: {
-    editItem(team: Team) {
-      this.editedIndex = this.teams.indexOf(team);
-      this.editedItem = { ...team };
-      this.dialog = true;
-    },
-
-    deleteItem(team: Team) {
-      const index = this.teams.indexOf(team);
-      confirm("Are you sure you want to delete this item?") &&
-        this.teams.splice(index, 1);
-    },
-
     close() {
       this.dialog = false;
       this.$nextTick(() => {
         this.editedItem = { ...this.defaultItem };
         this.editedIndex = -1;
+        this.dialogLoading = false;
       });
     },
-
-    save() {
-      if (this.editedIndex > -1) {
-        TeamServiceInstance.patch(this.editedItem.id, {})
-          .then((response: AxiosResponse<Team>) => {
-            Object.assign(this.teams[this.editedIndex], response.data as Team)
+    deleteItem(team: Team) {
+      const index = _.findIndex(this.teams, ['id', team.id]);
+      confirm("Are you sure you want to delete this item?") &&
+        TeamServiceInstance.delete(team.id)
+          .then(() => {
+            this.teams.splice(index, 1);
           })
           .catch((error: Error) => {
             console.error(error);
+          });
+    },
+    editItem(team: Team) {
+      this.editedIndex = _.findIndex(this.teams, ['id', team.id]);
+      this.editedItem = { ...team };
+      this.dialog = true;
+    },
+    moment(date: Date) {
+      return moment(date);
+    },
+    save() {
+      this.dialogLoading = true;
+
+      if (this.editedIndex > -1) {
+        const patches = [] as Patch[];
+
+        patches.push({
+          op: "replace",
+          path: "/name",
+          value: this.editedItem.name
+        } as Patch);
+
+        TeamServiceInstance.patch(this.editedItem.id, patches)
+          .then((response: AxiosResponse<Team>) => {
+            Object.assign(this.teams[this.editedIndex], response.data as Team)
+            this.close();
           })
+          .catch((error: Error) => {
+            console.error(error);
+            this.close();
+          });
       } else {
-        this.teams.push(this.editedItem)
+        TeamServiceInstance.post(this.editedItem as Team)
+          .then((response: AxiosResponse<Team>) => {
+            this.teams.push(response.data as Team);
+            this.close();
+          })
+          .catch((error: Error) => {
+            console.error(error);
+            this.close();
+          });
       }
-      this.close();
     }
   },
   mounted: function() {

@@ -1,8 +1,9 @@
 import Axios, { AxiosResponse } from "axios";
 import Credential from "@/models/credentials.interface";
 import Token from "@/models/token.interface";
+import { BaseService } from './base.service';
 
-class AuthService {
+class AuthService extends BaseService {
   private static instance: AuthService;
 
   public static get Instance() {
@@ -12,14 +13,14 @@ class AuthService {
 
   public login(credential: Credential): Promise<AxiosResponse<Token>> {
     return Axios.post<Credential, AxiosResponse<Token>>(
-      `https://localhost:5001/api/v1/auth/login`,
+      `${this.api}/auth/login`,
       credential
     );
   }
 
   public refresh(token: Token): Promise<AxiosResponse<Token>> {
     return Axios.post<Token, AxiosResponse<Token>>(
-      `https://localhost:5001/api/v1/auth/refresh`,
+      `${this.api}/auth/refresh`,
       token
     );
   }

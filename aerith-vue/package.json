@@ -11,6 +11,8 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "googleapis": "^52.0.0",
+    "lodash": "^4.17.15",
+    "moment": "^2.27.0",
     "pug": "^2.0.0",
     "pug-plain-loader": "^1.0.0",
     "vue": "^2.6.11",
@@ -23,6 +25,8 @@
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.13.1",
+    "@types/lodash": "^4.14.157",
+    "@types/moment": "^2.13.0",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.4.0",

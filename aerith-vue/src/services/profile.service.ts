@@ -1,7 +1,8 @@
 import Axios, { AxiosResponse } from "axios";
 import Profile from "@/models/profile.interface";
+import { BaseService } from './base.service';
 
-class ProfileService {
+class ProfileService extends BaseService {
   private static instance: ProfileService;
 
   public static get Instance() {
@@ -10,7 +11,7 @@ class ProfileService {
   }
 
   public get(): Promise<AxiosResponse<Profile>> {
-    return Axios.get("https://localhost:5001/api/v1/account/profile");
+    return Axios.get(`${this.api}/account/profile`);
   }
 }
 
