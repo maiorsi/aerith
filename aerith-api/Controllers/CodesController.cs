@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Aerith.Api.Controllers
 {
-    [AllowAnonymous]
+    [Authorize(Policy = "AdministratorsOnly")]
     public class CodesController : BaseController<Code>
     {
         public CodesController(ILogger<CodesController> logger, IRepository<Code> repository)

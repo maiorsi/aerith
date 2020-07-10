@@ -93,11 +93,12 @@ export default Vue.extend({
           title: "Administration",
           items: [
             { title: "Codes", route: "/admin/codes" },
-            { title: "Leagues", route: "/admin/leagues" },
-            { title: "Tournaments", route: "/admin/tournaments" },
-            { title: "Teams", route: "/admin/teams" },
             { title: "Competitions", route: "/admin/competitions" },
             { title: "Groups", route: "/admin/groups" },
+            { title: "Group Users", route: "/admin/groupusers" },
+            { title: "Leagues", route: "/admin/leagues" },
+            { title: "Teams", route: "/admin/teams" },
+            { title: "Tournaments", route: "/admin/tournaments" },
             { title: "Users", route: "/admin/users" }
           ]
         }

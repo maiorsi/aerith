@@ -13,7 +13,7 @@ namespace Aerith.Api.Controllers
     [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    public class BaseController<T> : ControllerBase where T: MetaDbType
+    public class BaseController<T> : ControllerBase where T: class
     {
         private readonly ILogger<BaseController<T>> _logger;
         private readonly IRepository<T> _repository;

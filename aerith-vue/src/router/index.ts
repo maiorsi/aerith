@@ -9,7 +9,13 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import AdminRoot from "../views/admin/AdminRoot.vue";
 import Codes from "../views/admin/Codes.vue";
+import Competitions from "../views/admin/Competitions.vue";
+import Groups from "../views/admin/Groups.vue";
+import GroupUsers from "../views/admin/GroupUsers.vue";
+import Leagues from "../views/admin/Leagues.vue";
 import Teams from "../views/admin/Teams.vue";
+import Tournaments from "../views/admin/Tournaments.vue";
+import Users from "../views/admin/Users.vue";
 import store from "@/store";
 
 Vue.use(VueRouter);
@@ -33,8 +39,44 @@ const routes: Array<RouteConfig> = [
         meta: { requiresAuth: true }
       },
       {
+        path: "competitions",
+        component: Competitions,
+        // a meta field
+        meta: { requiresAuth: true }
+      },
+      {
+        path: "groups",
+        component: Groups,
+        // a meta field
+        meta: { requiresAuth: true }
+      },
+      {
+        path: "groupusers",
+        component: GroupUsers,
+        // a meta field
+        meta: { requiresAuth: true }
+      },
+      {
+        path: "leagues",
+        component: Leagues,
+        // a meta field
+        meta: { requiresAuth: true }
+      },
+      {
         path: "teams",
         component: Teams,
+        // a meta field
+        meta: { requiresAuth: true }
+      },
+      {
+        path: "tournaments",
+        component: Tournaments,
+        // a meta field
+        meta: { requiresAuth: true }
+      },
+      {
+        path: "users",
+        component: Users,
         // a meta field
         meta: { requiresAuth: true }
       }

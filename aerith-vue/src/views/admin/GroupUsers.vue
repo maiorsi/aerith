@@ -4,14 +4,14 @@
       <v-col>
         <v-data-table
           :headers="headers"
-          :items="codes"
+          :items="groupUsers"
           :items-per-page="10"
           :loading="loading"
           class="elevation-1"
         >
           <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title>Codes</v-toolbar-title>
+              <v-toolbar-title>Group Users</v-toolbar-title>
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialog" max-width="500px">
@@ -35,7 +35,7 @@
                         <v-col>
                            <v-text-field
                             v-model="editedItem.name"
-                            label="Code name"
+                            label="GroupUser name"
                           ></v-text-field>
                         </v-col>
                       </v-row>
@@ -75,9 +75,9 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Code from "../../models/code.interface";
+import GroupUser from "../../models/group.interface";
 import Patch from "../../models/meta/patch.interface";
-import { CodeServiceInstance } from "../../services/code.service";
+import { GroupUserServiceInstance } from "../../services/groupUser.service";
 import { AxiosResponse } from "axios";
 import _ from "lodash";
 import moment from "moment";
@@ -92,13 +92,13 @@ export default Vue.extend({
     return {
       defaultItem: {
         name: ""
-      } as Code,
+      } as GroupUser,
       dialog: false,
       dialogLoading: false,
       editedIndex: -1,
       editedItem: {
         name: ''
-      } as Code,
+      } as GroupUser,
       headers: [
         {
           text: "ID",
@@ -111,10 +111,10 @@ export default Vue.extend({
         { text: "Actions", value: "actions", sortable: false }
       ],
       loading: false,
-      codes: [] as Code[]
+      groupUsers: [] as GroupUser[]
     };
   },
-  name: "Codes",
+  name: "GroupUsers",
   methods: {
     close() {
       this.dialog = false;
@@ -124,20 +124,20 @@ export default Vue.extend({
         this.dialogLoading = false;
       });
     },
-    deleteItem(code: Code) {
-      const index = _.findIndex(this.codes, ['id', code.id]);
+    deleteItem(group: GroupUser) {
+      const index = _.findIndex(this.groupUsers, ['id', group.id]);
       confirm("Are you sure you want to delete this item?") &&
-        CodeServiceInstance.delete(code.id)
+        GroupUserServiceInstance.delete(group.id)
           .then(() => {
-            this.codes.splice(index, 1);
+            this.groupUsers.splice(index, 1);
           })
           .catch((error: Error) => {
             console.error(error);
           });
     },
-    editItem(code: Code) {
-      this.editedIndex = _.findIndex(this.codes, ['id', code.id]);
-      this.editedItem = { ...code };
+    editItem(group: GroupUser) {
+      this.editedIndex = _.findIndex(this.groupUsers, ['id', group.id]);
+      this.editedItem = { ...group };
       this.dialog = true;
     },
     moment(date: Date) {
@@ -155,9 +155,9 @@ export default Vue.extend({
           value: this.editedItem.name
         } as Patch);
 
-        CodeServiceInstance.patch(this.editedItem.id, patches)
-          .then((response: AxiosResponse<Code>) => {
-            Object.assign(this.codes[this.editedIndex], response.data as Code)
+        GroupUserServiceInstance.patch(this.editedItem.id, patches)
+          .then((response: AxiosResponse<GroupUser>) => {
+            Object.assign(this.groupUsers[this.editedIndex], response.data as GroupUser)
             this.close();
           })
           .catch((error: Error) => {
@@ -165,9 +165,9 @@ export default Vue.extend({
             this.close();
           });
       } else {
-        CodeServiceInstance.post(this.editedItem as Code)
-          .then((response: AxiosResponse<Code>) => {
-            this.codes.push(response.data as Code);
+        GroupUserServiceInstance.post(this.editedItem as GroupUser)
+          .then((response: AxiosResponse<GroupUser>) => {
+            this.groupUsers.push(response.data as GroupUser);
             this.close();
           })
           .catch((error: Error) => {
@@ -179,9 +179,9 @@ export default Vue.extend({
   },
   mounted: function() {
     this.loading = true;
-    CodeServiceInstance.get()
-      .then((response: AxiosResponse<Code[]>) => {
-        this.codes = response.data as Code[];
+    GroupUserServiceInstance.get()
+      .then((response: AxiosResponse<GroupUser[]>) => {
+        this.groupUsers = response.data as GroupUser[];
         this.loading = false;
       })
       .catch(() => {

@@ -11,7 +11,7 @@ using Aerith.Data.Helpers;
 
 namespace Aerith.Api.Controllers
 {
-    [AllowAnonymous]
+    [Authorize(Policy = "AdministratorsOnly")]
     public class GroupsController : BaseController<Group>
     {
         private readonly ILogger<GroupsController> _logger;
@@ -33,6 +33,8 @@ namespace Aerith.Api.Controllers
         [HttpGet("_/{id:long}")]
         [MapToApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Produces(typeof(Group))]
         public async new Task<ActionResult<Group>> GetOne_1_0([FromRoute] long id,  ApiVersion version)
         {
             _logger.LogTrace("GET api/v{}.{}/[controller]/{}", version.MajorVersion, version.MinorVersion, id);

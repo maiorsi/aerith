@@ -19,7 +19,7 @@ namespace Aerith.Api.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public AccountController(IMapper mapper,UserManager<ApplicationUser> userManager)
+        public AccountController(IMapper mapper, UserManager<ApplicationUser> userManager)
         {
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));

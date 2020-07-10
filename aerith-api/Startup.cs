@@ -127,6 +127,12 @@ namespace Aerith.Api
                     };
                 });
             
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdministratorsOnly",
+                    policy => policy.RequireRole("Administrators"));
+            });
+
             // Automapper
             services.AddAutoMapper(typeof(Startup));
 

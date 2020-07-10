@@ -1,5 +1,10 @@
+import League from './league.interface';
+import Season from './season.interface';
+
 export default interface Tournament {
-  id: number;
-  name: string;
   createdDate: Date;
+  id: number;
+  league: League;
+  name: string;
+  season: Season;
 }

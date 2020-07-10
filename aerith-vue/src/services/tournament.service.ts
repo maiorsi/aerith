@@ -12,7 +12,7 @@ class TournamentService extends BaseService {
   }
 
   public get(): Promise<AxiosResponse<Tournament[]>> {
-    return Axios.get(`${this.api}/tournaments`);
+    return Axios.get(`${this.api}/tournaments/all`);
   }
 
   public post(tournament: Tournament): Promise<AxiosResponse<Tournament>> {

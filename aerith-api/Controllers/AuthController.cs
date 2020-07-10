@@ -10,6 +10,7 @@ using Aerith.Api.Settings;
 using Aerith.Common.Models.Dto;
 using Aerith.Common.Models.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -39,6 +40,10 @@ namespace Aerith.Api.Controllers
 
         [HttpPost("login")]
         [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Produces(typeof(TokenDto))]
         public async Task<IActionResult> Login_1_0([FromBody] CredentialsDto credentials, ApiVersion apiVersion)
         {
             if (!ModelState.IsValid)
@@ -83,6 +88,9 @@ namespace Aerith.Api.Controllers
 
         [HttpPost("refresh")]
         [MapToApiVersion("1.0")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [Produces(typeof(TokenDto))]
         public async Task<IActionResult> Refresh_1_0([FromBody] TokenDto token, ApiVersion apiVersion)
         {
             var principal = GetPrincipalFromExpiredToken(token.Token);

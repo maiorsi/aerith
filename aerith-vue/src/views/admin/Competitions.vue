@@ -4,14 +4,14 @@
       <v-col>
         <v-data-table
           :headers="headers"
-          :items="codes"
+          :items="competitions"
           :items-per-page="10"
           :loading="loading"
           class="elevation-1"
         >
           <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title>Codes</v-toolbar-title>
+              <v-toolbar-title>Competitions</v-toolbar-title>
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialog" max-width="500px">
@@ -35,7 +35,7 @@
                         <v-col>
                            <v-text-field
                             v-model="editedItem.name"
-                            label="Code name"
+                            label="Competition name"
                           ></v-text-field>
                         </v-col>
                       </v-row>
@@ -75,9 +75,9 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Code from "../../models/code.interface";
+import Competition from "../../models/competition.interface";
 import Patch from "../../models/meta/patch.interface";
-import { CodeServiceInstance } from "../../services/code.service";
+import { CompetitionServiceInstance } from "../../services/competition.service";
 import { AxiosResponse } from "axios";
 import _ from "lodash";
 import moment from "moment";
@@ -92,13 +92,13 @@ export default Vue.extend({
     return {
       defaultItem: {
         name: ""
-      } as Code,
+      } as Competition,
       dialog: false,
       dialogLoading: false,
       editedIndex: -1,
       editedItem: {
         name: ''
-      } as Code,
+      } as Competition,
       headers: [
         {
           text: "ID",
@@ -111,10 +111,10 @@ export default Vue.extend({
         { text: "Actions", value: "actions", sortable: false }
       ],
       loading: false,
-      codes: [] as Code[]
+      competitions: [] as Competition[]
     };
   },
-  name: "Codes",
+  name: "Competitions",
   methods: {
     close() {
       this.dialog = false;
@@ -124,20 +124,20 @@ export default Vue.extend({
         this.dialogLoading = false;
       });
     },
-    deleteItem(code: Code) {
-      const index = _.findIndex(this.codes, ['id', code.id]);
+    deleteItem(competition: Competition) {
+      const index = _.findIndex(this.competitions, ['id', competition.id]);
       confirm("Are you sure you want to delete this item?") &&
-        CodeServiceInstance.delete(code.id)
+        CompetitionServiceInstance.delete(competition.id)
           .then(() => {
-            this.codes.splice(index, 1);
+            this.competitions.splice(index, 1);
           })
           .catch((error: Error) => {
             console.error(error);
           });
     },
-    editItem(code: Code) {
-      this.editedIndex = _.findIndex(this.codes, ['id', code.id]);
-      this.editedItem = { ...code };
+    editItem(competition: Competition) {
+      this.editedIndex = _.findIndex(this.competitions, ['id', competition.id]);
+      this.editedItem = { ...competition };
       this.dialog = true;
     },
     moment(date: Date) {
@@ -155,9 +155,9 @@ export default Vue.extend({
           value: this.editedItem.name
         } as Patch);
 
-        CodeServiceInstance.patch(this.editedItem.id, patches)
-          .then((response: AxiosResponse<Code>) => {
-            Object.assign(this.codes[this.editedIndex], response.data as Code)
+        CompetitionServiceInstance.patch(this.editedItem.id, patches)
+          .then((response: AxiosResponse<Competition>) => {
+            Object.assign(this.competitions[this.editedIndex], response.data as Competition)
             this.close();
           })
           .catch((error: Error) => {
@@ -165,9 +165,9 @@ export default Vue.extend({
             this.close();
           });
       } else {
-        CodeServiceInstance.post(this.editedItem as Code)
-          .then((response: AxiosResponse<Code>) => {
-            this.codes.push(response.data as Code);
+        CompetitionServiceInstance.post(this.editedItem as Competition)
+          .then((response: AxiosResponse<Competition>) => {
+            this.competitions.push(response.data as Competition);
             this.close();
           })
           .catch((error: Error) => {
@@ -179,9 +179,9 @@ export default Vue.extend({
   },
   mounted: function() {
     this.loading = true;
-    CodeServiceInstance.get()
-      .then((response: AxiosResponse<Code[]>) => {
-        this.codes = response.data as Code[];
+    CompetitionServiceInstance.get()
+      .then((response: AxiosResponse<Competition[]>) => {
+        this.competitions = response.data as Competition[];
         this.loading = false;
       })
       .catch(() => {

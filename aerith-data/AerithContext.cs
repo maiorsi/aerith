@@ -236,6 +236,7 @@ namespace Aerith.Data
                 e.HasData(new ApplicationUser[] {
                     new ApplicationUser {
                         Id = 1L,
+                        Name = "Administrator",
                         UserName = "admin",
                         NormalizedUserName = "ADMIN",
                         PasswordHash = passwordHasher.HashPassword(null, "P@ssword01")
@@ -247,6 +248,10 @@ namespace Aerith.Data
                 e.HasData(new ApplicationUserRole[]{
                     new ApplicationUserRole {
                         RoleId = 1L,
+                        UserId = 1L
+                    },
+                    new ApplicationUserRole {
+                        RoleId = 2L,
                         UserId = 1L
                     }
                 });

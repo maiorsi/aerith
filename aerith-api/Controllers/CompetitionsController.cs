@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Aerith.Api.Controllers
 {
-    [AllowAnonymous]
+    [Authorize(Policy = "AdministratorsOnly")]
     public class CompetitionsController : BaseController<Competition>
     {
         private readonly ILogger<CompetitionsController> _logger;

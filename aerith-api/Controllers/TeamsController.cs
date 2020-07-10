@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Aerith.Api.Controllers
 {
-    [AllowAnonymous]
+    [Authorize(Policy = "AdministratorsOnly")]
     public class TeamsController : BaseController<Team>
     {
         public TeamsController(ILogger<TeamsController> logger, IRepository<Team> repository)

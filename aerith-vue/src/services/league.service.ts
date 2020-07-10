@@ -12,7 +12,7 @@ class LeagueService extends BaseService {
   }
 
   public get(): Promise<AxiosResponse<League[]>> {
-    return Axios.get(`${this.api}/leagues`);
+    return Axios.get(`${this.api}/leagues/all`);
   }
 
   public post(league: League): Promise<AxiosResponse<League>> {

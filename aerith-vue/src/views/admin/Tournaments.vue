@@ -4,14 +4,14 @@
       <v-col>
         <v-data-table
           :headers="headers"
-          :items="codes"
+          :items="tournaments"
           :items-per-page="10"
           :loading="loading"
           class="elevation-1"
         >
           <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title>Codes</v-toolbar-title>
+              <v-toolbar-title>Tournaments</v-toolbar-title>
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialog" max-width="500px">
@@ -33,9 +33,15 @@
                     <v-container>
                       <v-row>
                         <v-col>
+                          <v-text-field
+                            v-model="editedItem.value"
+                            label="Tournament value"
+                          ></v-text-field>
+                        </v-col>
+                        <v-col>
                            <v-text-field
                             v-model="editedItem.name"
-                            label="Code name"
+                            label="Tournament name"
                           ></v-text-field>
                         </v-col>
                       </v-row>
@@ -75,9 +81,9 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Code from "../../models/code.interface";
+import Tournament from "../../models/tournament.interface";
 import Patch from "../../models/meta/patch.interface";
-import { CodeServiceInstance } from "../../services/code.service";
+import { TournamentServiceInstance } from "../../services/tournament.service";
 import { AxiosResponse } from "axios";
 import _ from "lodash";
 import moment from "moment";
@@ -92,13 +98,13 @@ export default Vue.extend({
     return {
       defaultItem: {
         name: ""
-      } as Code,
+      } as Tournament,
       dialog: false,
       dialogLoading: false,
       editedIndex: -1,
       editedItem: {
-        name: ''
-      } as Code,
+        name: ""
+      } as Tournament,
       headers: [
         {
           text: "ID",
@@ -106,15 +112,16 @@ export default Vue.extend({
           sortable: true,
           value: "id"
         },
-        { text: "Name", value: "name" },
+        { text: "Season", value: "season.value" },
+        { text: "League", value: "league.name" },
         { text: "Created", value: "createdDate" },
         { text: "Actions", value: "actions", sortable: false }
       ],
       loading: false,
-      codes: [] as Code[]
+      tournaments: [] as Tournament[]
     };
   },
-  name: "Codes",
+  name: "Tournaments",
   methods: {
     close() {
       this.dialog = false;
@@ -124,20 +131,20 @@ export default Vue.extend({
         this.dialogLoading = false;
       });
     },
-    deleteItem(code: Code) {
-      const index = _.findIndex(this.codes, ['id', code.id]);
+    deleteItem(tournament: Tournament) {
+      const index = _.findIndex(this.tournaments, ['id', tournament.id]);
       confirm("Are you sure you want to delete this item?") &&
-        CodeServiceInstance.delete(code.id)
+        TournamentServiceInstance.delete(tournament.id)
           .then(() => {
-            this.codes.splice(index, 1);
+            this.tournaments.splice(index, 1);
           })
           .catch((error: Error) => {
             console.error(error);
           });
     },
-    editItem(code: Code) {
-      this.editedIndex = _.findIndex(this.codes, ['id', code.id]);
-      this.editedItem = { ...code };
+    editItem(tournament: Tournament) {
+      this.editedIndex = _.findIndex(this.tournaments, ['id', tournament.id]);
+      this.editedItem = { ...tournament };
       this.dialog = true;
     },
     moment(date: Date) {
@@ -155,9 +162,9 @@ export default Vue.extend({
           value: this.editedItem.name
         } as Patch);
 
-        CodeServiceInstance.patch(this.editedItem.id, patches)
-          .then((response: AxiosResponse<Code>) => {
-            Object.assign(this.codes[this.editedIndex], response.data as Code)
+        TournamentServiceInstance.patch(this.editedItem.id, patches)
+          .then((response: AxiosResponse<Tournament>) => {
+            Object.assign(this.tournaments[this.editedIndex], response.data as Tournament)
             this.close();
           })
           .catch((error: Error) => {
@@ -165,9 +172,9 @@ export default Vue.extend({
             this.close();
           });
       } else {
-        CodeServiceInstance.post(this.editedItem as Code)
-          .then((response: AxiosResponse<Code>) => {
-            this.codes.push(response.data as Code);
+        TournamentServiceInstance.post(this.editedItem as Tournament)
+          .then((response: AxiosResponse<Tournament>) => {
+            this.tournaments.push(response.data as Tournament);
             this.close();
           })
           .catch((error: Error) => {
@@ -179,9 +186,9 @@ export default Vue.extend({
   },
   mounted: function() {
     this.loading = true;
-    CodeServiceInstance.get()
-      .then((response: AxiosResponse<Code[]>) => {
-        this.codes = response.data as Code[];
+    TournamentServiceInstance.get()
+      .then((response: AxiosResponse<Tournament[]>) => {
+        this.tournaments = response.data as Tournament[];
         this.loading = false;
       })
       .catch(() => {

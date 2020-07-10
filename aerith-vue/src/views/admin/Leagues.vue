@@ -4,14 +4,14 @@
       <v-col>
         <v-data-table
           :headers="headers"
-          :items="codes"
+          :items="leagues"
           :items-per-page="10"
           :loading="loading"
           class="elevation-1"
         >
           <template v-slot:top>
             <v-toolbar flat>
-              <v-toolbar-title>Codes</v-toolbar-title>
+              <v-toolbar-title>Leagues</v-toolbar-title>
               <v-divider class="mx-4" inset vertical></v-divider>
               <v-spacer></v-spacer>
               <v-dialog v-model="dialog" max-width="500px">
@@ -35,7 +35,7 @@
                         <v-col>
                            <v-text-field
                             v-model="editedItem.name"
-                            label="Code name"
+                            label="League name"
                           ></v-text-field>
                         </v-col>
                       </v-row>
@@ -75,9 +75,9 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Code from "../../models/code.interface";
+import League from "../../models/league.interface";
 import Patch from "../../models/meta/patch.interface";
-import { CodeServiceInstance } from "../../services/code.service";
+import { LeagueServiceInstance } from "../../services/league.service";
 import { AxiosResponse } from "axios";
 import _ from "lodash";
 import moment from "moment";
@@ -92,13 +92,13 @@ export default Vue.extend({
     return {
       defaultItem: {
         name: ""
-      } as Code,
+      } as League,
       dialog: false,
       dialogLoading: false,
       editedIndex: -1,
       editedItem: {
         name: ''
-      } as Code,
+      } as League,
       headers: [
         {
           text: "ID",
@@ -107,14 +107,15 @@ export default Vue.extend({
           value: "id"
         },
         { text: "Name", value: "name" },
+        { text: "Code", value: "code.name" },
         { text: "Created", value: "createdDate" },
         { text: "Actions", value: "actions", sortable: false }
       ],
       loading: false,
-      codes: [] as Code[]
+      leagues: [] as League[]
     };
   },
-  name: "Codes",
+  name: "Leagues",
   methods: {
     close() {
       this.dialog = false;
@@ -124,20 +125,20 @@ export default Vue.extend({
         this.dialogLoading = false;
       });
     },
-    deleteItem(code: Code) {
-      const index = _.findIndex(this.codes, ['id', code.id]);
+    deleteItem(league: League) {
+      const index = _.findIndex(this.leagues, ['id', league.id]);
       confirm("Are you sure you want to delete this item?") &&
-        CodeServiceInstance.delete(code.id)
+        LeagueServiceInstance.delete(league.id)
           .then(() => {
-            this.codes.splice(index, 1);
+            this.leagues.splice(index, 1);
           })
           .catch((error: Error) => {
             console.error(error);
           });
     },
-    editItem(code: Code) {
-      this.editedIndex = _.findIndex(this.codes, ['id', code.id]);
-      this.editedItem = { ...code };
+    editItem(league: League) {
+      this.editedIndex = _.findIndex(this.leagues, ['id', league.id]);
+      this.editedItem = { ...league };
       this.dialog = true;
     },
     moment(date: Date) {
@@ -155,9 +156,9 @@ export default Vue.extend({
           value: this.editedItem.name
         } as Patch);
 
-        CodeServiceInstance.patch(this.editedItem.id, patches)
-          .then((response: AxiosResponse<Code>) => {
-            Object.assign(this.codes[this.editedIndex], response.data as Code)
+        LeagueServiceInstance.patch(this.editedItem.id, patches)
+          .then((response: AxiosResponse<League>) => {
+            Object.assign(this.leagues[this.editedIndex], response.data as League)
             this.close();
           })
           .catch((error: Error) => {
@@ -165,9 +166,9 @@ export default Vue.extend({
             this.close();
           });
       } else {
-        CodeServiceInstance.post(this.editedItem as Code)
-          .then((response: AxiosResponse<Code>) => {
-            this.codes.push(response.data as Code);
+        LeagueServiceInstance.post(this.editedItem as League)
+          .then((response: AxiosResponse<League>) => {
+            this.leagues.push(response.data as League);
             this.close();
           })
           .catch((error: Error) => {
@@ -179,9 +180,9 @@ export default Vue.extend({
   },
   mounted: function() {
     this.loading = true;
-    CodeServiceInstance.get()
-      .then((response: AxiosResponse<Code[]>) => {
-        this.codes = response.data as Code[];
+    LeagueServiceInstance.get()
+      .then((response: AxiosResponse<League[]>) => {
+        this.leagues = response.data as League[];
         this.loading = false;
       })
       .catch(() => {
